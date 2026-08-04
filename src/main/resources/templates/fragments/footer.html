@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Insert title here</title>
+  </head>
+  <body>
+    <div th:fragment="siteFooter">
+      <footer class="text-white py-5" style="background-color: #000">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4 mb-4">
+              <h5 class="fw-bold fs-4">STORE®</h5>
+              <p class="mb-2">
+                Điện thoại chính hãng – công nghệ hiện đại, chất lượng vượt trội
+                và giá cả hợp lý.
+              </p>
+              <ul class="list-unstyled small opacity-75">
+                <li>
+                  <i class="fas fa-certificate text-warning me-2"></i>Bảo Hành 1
+                  đổi 1
+                </li>
+                <li>
+                  <i class="fas fa-check-circle text-success me-2"></i>100% sản
+                  phẩm chính hãng
+                </li>
+                <li>
+                  <i class="fas fa-globe-asia text-info me-2"></i>Giao hàng toàn
+                  quốc & quốc tế
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-2 mb-4">
+              <h5 class="fw-bold">Liên kết nhanh</h5>
+              <ul class="list-unstyled lh-lg">
+                <li>
+                  <a th:href="@{/home}" class="text-white text-decoration-none"
+                    >Trang chủ</a
+                  >
+                </li>
+                <li>
+                  <a
+                    th:href="@{/product}"
+                    class="text-white text-decoration-none"
+                    >Sản phẩm</a
+                  >
+                </li>
+                <li>
+                  <a
+                    th:href="@{/introduction}"
+                    class="text-white text-decoration-none"
+                    >Giới thiệu</a
+                  >
+                </li>
+                <!--             <li><a href="#" class="text-white text-decoration-none">Liên hệ</a></li> -->
+              </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+              <h5 class="fw-bold">Liên hệ</h5>
+              <ul class="list-unstyled lh-lg">
+                <li>Email: storesupport@gmail.com</li>
+                <li>Hotline: 012 345 6789</li>
+                <li>Thời gian: 9h - 21h (T2 - CN)</li>
+              </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+              <h5 class="fw-bold">Địa chỉ cửa hàng</h5>
+              <ul class="list-unstyled lh-lg">
+                <li>
+                  <a
+                    href=""
+                    target="_blank"
+                    class="text-white text-decoration-none store-location"
+                    ><i class="fas fa-map-marker-alt me-2"></i>CN1:
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href=""
+                    target="_blank"
+                    class="text-white text-decoration-none store-location"
+                    ><i class="fas fa-map-marker-alt me-2"></i>CN2:
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-12 mt-4 text-center">
+              <h5 class="fw-bold mb-3">Kết nối với STORE</h5>
+              <div class="d-flex justify-content-center gap-3">
+                <a
+                  th:href=""
+                  class="social-icon facebook"
+                  title="Facebook"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><i class="fab fa-facebook-f"></i
+                ></a>
+                <a
+                  th:href=""
+                  class="social-icon tiktok"
+                  title="TikTok"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><i class="fab fa-tiktok"></i
+                ></a>
+                <a
+                  th:href=""
+                  class="social-icon instagram"
+                  title="Instagram"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><i class="fab fa-instagram"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-5 small">
+            <a th:href="@{/policy}" class="text-white text-decoration-none"
+              >Chính sách & Điều Khoản</a
+            >
+            <p class="mb-0 opacity-75">
+              &copy; 2026 STORE®. Tất cả các quyền được bảo lưu.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

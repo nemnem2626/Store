@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn hàng của tôi</title>
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
+  <link rel="stylesheet" th:href="@{/css/orders.css}">
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+</head>
+<body>
+<!-- Header -->
+  <div th:replace="fragments/header :: siteHeader"></div>
+
+    <div class="orders-container pb-2 pt-2">
+        <div class="container ">
+            <h2 class="text-center mb-4 text-dark fw-bold">Đơn hàng của tôi</h2>
+
+            <!-- Thông báo -->
+            <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert" th:text="${message}">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" th:text="${error}">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Bảng đơn hàng -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center shadow-sm rounded-4 overflow-hidden">
+                    <thead class="table-dark">
+                        <tr class="text-nowrap">
+                            <th>Mã đơn</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${orders}" class="align-middle">
+                            <td th:text="${order.id}" class="fw-semibold text-dark"></td>
+                            <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <span class="text-danger fw-medium" th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 2, 'POINT')} + ' VNĐ'"></span>
+                            </td>
+                            <td>
+							    <span class="badge rounded-pill px-3 py-2 text-uppercase fw-semibold"
+							          th:classappend=" 
+							              ${order.status} == 'PENDING' ? 'text-bg-warning' :
+							              (${order.status} == 'SHIPPING' ? 'text-bg-info' :
+							              (${order.status} == 'DELIVERED' ? 'text-bg-success' :
+							              (${order.status} == 'CANCELED' ? 'text-bg-danger' : 'text-bg-secondary')))"
+							          th:text="${@orderService.getVietnameseStatus(order.status)}">
+							    </span>
+							</td>
+                            <td>
+                                <a th:href="@{'/orders/' + ${order.id}}" class="btn btn-sm btn-outline-dark rounded-pill px-3 me-2">
+                                    <i class="bi bi-eye"></i> Xem
+                                </a>
+                                <form th:if="${order.status == 'PENDING'}" th:action="@{'/orders/cancel/' + ${order.id}}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                        <i class="bi bi-x-circle"></i> Hủy
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(orders)}">
+                            <td colspan="5" class="text-center text-muted py-4">Bạn chưa có đơn hàng nào.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+      <!-- Back to Top Button -->
+  <button id="backToTop" title="Lên đầu trang">↑</button>
+  <script src="https://app.tudongchat.com/js/chatbox.js"></script>
+<script>
+  const tudong_chatbox = new TuDongChat('rcAWY0gPAIyrID6TbMt_5')
+  tudong_chatbox.initial()
+</script>
+
+  <div th:replace="fragments/footer :: siteFooter"></div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+<!--   <script th:src="@{/js/home.js}"></script> -->
+  <script type="module" src="/js/main.js"></script>
+  <script type="module" src="/js/backtotop.js"></script>
+</body>
+</html>

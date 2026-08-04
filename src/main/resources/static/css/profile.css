@@ -1,0 +1,103 @@
+/* General Styles */
+body {
+    background: linear-gradient(135deg, #e0f7fa 0%, #d1c4e9 100%);
+    transition: all 0.3s ease;
+    background-size: 200% 200%;
+    animation: gradient 15s ease infinite;
+}
+
+/* Dynamic Background Animation */
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Profile Styles */
+.profile-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.profile-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+.card-body {
+    padding: 2.5rem;
+}
+
+/* .form-label {
+    font-weight: 600;
+    color: #444;
+    display: flex;
+    align-items: center;
+}
+.form-control {
+    border-radius: 10px;
+    border-color: #ced4da;
+    transition: all 0.3s ease;
+    padding: 12px 15px;
+}
+.form-control:focus {
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+    border-color: #007bff;
+    background-color: #f8f9fa;
+} */
+
+.btn-custom {
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    color: #fff;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+.btn-custom:hover {
+    background: linear-gradient(90deg, #4a00e0, #1e62d0);
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+    transform: translateY(-2px);
+}
+.btn-custom::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.2);
+    transition: width 0.3s ease;
+}
+.btn-custom:hover::after {
+    width: 100%;
+}
+
+/* .text-dark:hover {
+    color: #007bff !important;
+} */
+
+/* Alert */
+.alert {
+    border-left: 5px solid #28a745;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #e9f7ea;
+    color: #155724;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.card {
+    animation: fadeIn 0.6s ease-in-out;
+}

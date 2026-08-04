@@ -1,0 +1,211 @@
+/* General Styles */
+/* body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+}
+*/
+section {
+    padding: 80px 0;
+    position: relative;
+}
+
+h2, h3 {
+    font-weight: 700;
+    color: #1e1e22;
+    margin-bottom: 1.5rem;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    text-align: center;
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/494131878_122149718804615950_3901423101448413767_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=nUJZbHfuk3EQ7kNvwEmIYMW&_nc_oc=AdmSOjM7pxR89LpQaFD8EdAOnTGGn3fC4ZrnkLQ6-J5teGrA-Cud77HJXYGJnh9U6WY&_nc_zt=23&_nc_ht=scontent.fsgn19-1.fna&_nc_gid=6e41GgQl4pPBs48_MG9tyA&oh=00_AfW-aeOPAGskNYIleQExPqcv4Flk80vMsWQy0hbGV1wVMw&oe=68AE5580') no-repeat center center/cover;
+    background-size: cover;
+    opacity: 0.2;
+    z-index: -1;
+}
+
+.hero-title {
+    font-size: 3rem;
+    color: #1e1e22;
+    animation: fadeInDown 1s ease-out;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    max-width: 600px;
+    margin: 1rem auto;
+    animation: fadeInUp 1s ease-out 0.5s forwards;
+    opacity: 0;
+}
+
+/* History Section */
+.history-section {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    animation: slideIn 1s ease-out;
+}
+
+.history-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.history-section:hover img {
+    transform: scale(1.05);
+}
+
+/* Team Section */
+.team-section {
+    background: #f1f3f5;
+    text-align: center;
+}
+
+.team-member {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 1rem;
+}
+
+.team-member:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.team-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    animation: zoomIn 1s ease-out;
+}
+
+/* Products Section */
+.products-section {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    animation: fadeInLeft 1s ease-out;
+}
+
+.product-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.products-section:hover .product-img {
+    transform: scale(1.02);
+}
+
+/* Commitment Section */
+.commitment-section {
+    background: #e9ecef;
+    text-align: center;
+}
+
+.commitment-item {
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+    animation: fadeInRight 1s ease-out;
+}
+
+.commitment-item:hover {
+    transform: translateY(-5px);
+}
+
+.commitment-item i {
+    color: #0d6efd;
+    transition: color 0.3s ease;
+}
+
+.commitment-item:hover i {
+    color: #0a58ca;
+}
+
+/* Community Section */
+.community-section {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    animation: slideIn 1s ease-out;
+}
+
+.community-img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.community-section:hover .community-img {
+    transform: scale(1.03);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    0% { opacity: 0; transform: translateY(-50px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(50px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+    0% { opacity: 0; transform: translateX(-50px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+    0% { opacity: 0; transform: translateX(50px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideIn {
+    0% { opacity: 0; transform: translateX(-20px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes zoomIn {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title { font-size: 2.5rem; }
+    .hero-subtitle { font-size: 1rem; }
+    .team-img { width: 120px; height: 120px; }
+    .product-img, .community-img { height: 200px; }
+    .col-md-6 { margin-bottom: 2rem; }
+}

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chỉnh Sửa Thông Tin</title>
+    <!-- Bootstrap 5 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/banner-slideshow.css}" />
+    <link rel="stylesheet" th:href="@{/css/carousel.css}" />
+    <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}" />
+    <link rel="stylesheet" th:href="@{/css/profile.css}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <style>
+      /* Tùy chỉnh thông báo */
+      .custom-alert {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        animation: slideIn 0.5s ease-out;
+        margin-bottom: 20px;
+      }
+
+      .custom-alert-success {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+      }
+
+      .custom-alert-danger {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+      }
+
+      .custom-alert .alert-icon {
+        margin-right: 10px;
+        font-size: 1.5rem;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* Tùy chọn tự động ẩn sau 3 giây */
+      .custom-alert.auto-hide {
+        animation: fadeOut 3s forwards;
+      }
+
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <div th:replace="fragments/header :: siteHeader"></div>
+
+    <div class="container mt-5">
+      <h2
+        class="text-center mb-4"
+        style="
+          font-family: &quot;Arial&quot;, sans-serif;
+          font-weight: 700;
+          color: #333;
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        "
+      >
+        Cập Nhật Thông Tin Cá Nhân
+      </h2>
+      <div
+        th:if="${message}"
+        th:with="alertClass=${message.startsWith('Cập nhật thông tin thành công') ? 'custom-alert-success' : 'custom-alert-danger'}"
+      >
+        <div
+          class="custom-alert"
+          th:class="'custom-alert ' + ${alertClass} + ' auto-hide'"
+        >
+          <i
+            th:class="${message.startsWith('Cập nhật thông tin thành công') ? 'bi bi-check-circle-fill alert-icon' : 'bi bi-exclamation-triangle-fill alert-icon'}"
+          ></i>
+          <span th:text="${message}"></span>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card profile-card">
+            <div class="card-body">
+              <form
+                th:action="@{/user/update}"
+                method="post"
+                onsubmit="return validateForm(event);"
+              >
+                <div class="mb-4">
+                  <label for="fullname" class="form-label"
+                    ><i class="bi bi-person-fill me-2"></i>Họ và Tên
+                    <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="fullname"
+                    name="fullname"
+                    th:value="${user?.fullname ?: ''}"
+                    required
+                  />
+                  <small
+                    id="fullnameError"
+                    class="text-danger"
+                    style="display: none"
+                  ></small>
+                </div>
+                <div class="mb-4">
+                  <label for="phone" class="form-label"
+                    ><i class="bi bi-telephone-fill me-2"></i>Số Điện
+                    Thoại</label
+                  >
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="phone"
+                    name="phone"
+                    th:value="${user?.phone ?: ''}"
+                    maxlength="10"
+                  />
+                  <small
+                    id="phoneError"
+                    class="text-danger"
+                    style="display: none"
+                  ></small>
+                </div>
+                <div class="mb-4">
+                  <label for="address" class="form-label"
+                    ><i class="bi bi-geo-alt-fill me-2"></i>Địa Chỉ</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    name="address"
+                    th:value="${user?.address ?: ''}"
+                  />
+                </div>
+                <div class="mb-4">
+                  <label for="password" class="form-label"
+                    ><i class="bi bi-lock-fill me-2"></i>Mật khẩu (Nếu muốn thay
+                    đổi)</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                  />
+                  <small
+                    id="passwordError"
+                    class="text-danger"
+                    style="display: none"
+                  ></small>
+                </div>
+                <button type="submit" class="btn btn-custom w-100">
+                  <i class="bi bi-check-circle-fill me-2"></i>Cập Nhật
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" title="Lên đầu trang">↑</button>
+    <script src="https://app.tudongchat.com/js/chatbox.js"></script>
+    <script>
+      const tudong_chatbox = new TuDongChat("rcAWY0gPAIyrID6TbMt_5");
+      tudong_chatbox.initial();
+    </script>
+    <div th:replace="fragments/footer :: siteFooter"></div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/js/main.js"></script>
+    <script type="module" src="/js/backtotop.js"></script>
+    <script>
+      function validateForm(event) {
+        event.preventDefault();
+
+        const fullname = document.getElementById("fullname").value.trim();
+        const phone = document.getElementById("phone").value;
+        const password = document.getElementById("password").value;
+        const fullnameError = document.getElementById("fullnameError");
+        const phoneError = document.getElementById("phoneError");
+        const passwordError = document.getElementById("passwordError");
+
+        // Reset lỗi
+        fullnameError.style.display = "none";
+        phoneError.style.display = "none";
+        passwordError.style.display = "none";
+
+        // Kiểm tra fullname (chỉ chứa chữ cái Unicode và khoảng trắng, không chứa số hoặc ký tự đặc biệt)
+        try {
+          if (!/^[^\d\s][\p{L}\s]*$/u.test(fullname)) {
+            fullnameError.textContent =
+              "Họ và tên chỉ được chứa chữ cái và khoảng trắng!";
+            fullnameError.style.display = "block";
+            return false;
+          }
+        } catch (e) {
+          // Dự phòng cho trình duyệt không hỗ trợ cờ Unicode 'u'
+          if (fullname === "" || !/^[^\d\s][a-zA-Z\s]*$/.test(fullname)) {
+            fullnameError.textContent =
+              "Họ và tên chỉ được chứa chữ cái và khoảng trắng!";
+            fullnameError.style.display = "block";
+            return false;
+          }
+        }
+
+        // Kiểm tra phone (chỉ chứa số)
+        if (phone && !/^\d+$/.test(phone)) {
+          phoneError.textContent = "Số điện thoại chỉ được chứa số!";
+          phoneError.style.display = "block";
+          return false;
+        }
+        if (phone && phone.length > 10) {
+          phoneError.textContent =
+            "Số điện thoại không được vượt quá 10 chữ số!";
+          phoneError.style.display = "block";
+          return false;
+        }
+
+        // Kiểm tra password (tối thiểu 8 ký tự, chứa chữ và số) nếu có thay đổi
+        if (
+          password &&
+          (password.length < 8 ||
+            !/(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password))
+        ) {
+          passwordError.textContent =
+            "Mật khẩu phải có ít nhất 8 ký tự và chứa cả chữ lẫn số!";
+          passwordError.style.display = "block";
+          return false;
+        }
+
+        // Nếu không có lỗi, submit form
+        event.target.submit();
+        return true;
+      }
+    </script>
+  </body>
+</html>

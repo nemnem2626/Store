@@ -1,0 +1,138 @@
+/* HEADER GENERAL */
+.custom-header {
+  font-family: 'Segoe UI', sans-serif;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-link-hover {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.nav-link-hover::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 2px;
+  background-color: #dc3545;
+  transition: 0.3s ease;
+}
+
+.nav-link-hover:hover::after {
+  width: 100%;
+}
+
+.nav-link-hover:hover {
+  color: #dc3545 !important;
+}
+
+/* SEARCH FORM */
+.search-form {
+  position: relative;
+}
+
+.search-input {
+  border-radius: 20px;
+  padding-left: 35px;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 14px;
+}
+
+/* CART ICON */
+.cart-btn {
+  border: none;
+  background-color: transparent;
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  animation: badge-pop 0.3s ease-in-out;
+}
+
+@keyframes badge-pop {
+  0% {
+    transform: scale(0.5);
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Cart shake animation when product added */
+.shake-on-add:active {
+  animation: shake 0.4s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* DROPDOWN */
+.animate-dropdown {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+/* Thanh cuộn tổng thể */
+::-webkit-scrollbar {
+  width: 5px;  /* độ rộng */
+}
+
+/* Track (nền thanh cuộn) */
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); 
+}
+
+/* Thumb (nút kéo) */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 10px;
+}
+
+/* Hover vào Thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #FB9235; /* màu nền khi bôi đen */
+  color: #393838;         /* màu chữ khi bôi đen */
+}

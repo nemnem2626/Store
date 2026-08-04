@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chính sách và Điều khoản - LENUP</title>
+<!-- Bootstrap 5 -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Custom CSS -->
+<link rel="stylesheet" th:href="@{/css/policy.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
+</head>
+<body>
+
+	<div th:replace="fragments/header :: siteHeader"></div>
+
+	<div class="container py-5 policy-page">
+		<h1 class="text-center mb-5">Chính sách & Điều khoản của LENUP®</h1>
+
+		<!-- Chính sách bán hàng -->
+		<section class="mb-5">
+			<h2>📌 Chính sách bán hàng</h2>
+			<p>LENUP® cam kết cung cấp sản phẩm chất lượng cao, đúng mô tả và
+				nguồn gốc rõ ràng. Chúng tôi đảm bảo rằng mỗi sản phẩm đều được kiểm
+				tra kỹ trước khi giao đến khách hàng.</p>
+			<ul>
+				<li>Miễn phí vận chuyển với đơn hàng từ 500.000 VND.</li>
+				<li>Hỗ trợ thanh toán COD, chuyển khoản hoặc ví điện tử.</li>
+				<li>Thời gian xử lý đơn hàng từ 1 - 2 ngày làm việc.</li>
+				<li>Thời gian giao hàng: 2 - 5 ngày (tùy khu vực).</li>
+			</ul>
+		</section>
+
+		<!-- Chính sách đổi trả -->
+		<section class="mb-5">
+			<h2>🔄 Chính sách đổi trả</h2>
+			<p>
+				Khách hàng có thể đổi/trả sản phẩm trong vòng <strong>7
+					ngày</strong> kể từ ngày nhận hàng nếu sản phẩm bị lỗi hoặc không đúng mô
+				tả.
+			</p>
+			<ul>
+				<li>Sản phẩm đổi/trả phải còn nguyên tem mác, chưa qua sử dụng.</li>
+				<li>Chi phí đổi trả sẽ do chúng tôi chịu nếu lỗi từ phía
+					LENUP®.</li>
+				<li>Vui lòng liên hệ bộ phận CSKH qua <a
+					href="mailto:lenupstudio@gmail.com">lenupstudio@gmail.com</a> hoặc
+					fanpage để được hướng dẫn.
+				</li>
+				<li>Hoàn tiền trong vòng 5-7 ngày làm việc (nếu có).</li>
+			</ul>
+		</section>
+
+		<!-- Điều khoản & điều kiện -->
+		<section>
+			<h2>📃 Điều khoản & điều kiện</h2>
+			<p>Khi sử dụng dịch vụ của LENUP®, bạn đồng ý với các điều khoản
+				sau:</p>
+			<ul>
+				<li>Không sử dụng website cho mục đích lừa đảo, giả mạo hay gây
+					tổn hại đến người khác.</li>
+				<li>LENUP® có quyền thay đổi giá cả, thông tin sản phẩm mà
+					không cần thông báo trước.</li>
+				<li>Thông tin cá nhân của bạn sẽ được bảo mật tuyệt đối theo
+					chính sách bảo mật của chúng tôi.</li>
+				<li>Trong trường hợp tranh chấp, quyết định của LENUP® là quyết
+					định cuối cùng.</li>
+			</ul>
+		</section>
+	</div>
+	<button id="backToTop" title="Lên đầu trang">↑</button>
+	<script src="https://app.tudongchat.com/js/chatbox.js"></script>
+	<script>
+		const tudong_chatbox = new TuDongChat('rcAWY0gPAIyrID6TbMt_5')
+		tudong_chatbox.initial()
+	</script>
+	<div th:replace="fragments/footer :: siteFooter"></div>
+	<script type="module" src="/js/main.js"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

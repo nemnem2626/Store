@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Insert title here</title>
+  </head>
+  <body>
+    <div th:fragment="siteHeader">
+      <!-- HEADER -->
+      <nav
+        class="navbar navbar-expand-lg bg-white shadow-sm sticky-top custom-header"
+      >
+        <div class="container py-2">
+          <a class="navbar-brand fw-bold fs-4 text-dark" th:href="@{/home}"
+            >STORE<span class="text-dark">®</span></a
+          >
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- MENU LINKS -->
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-4">
+              <li class="nav-item">
+                <a
+                  class="nav-link fw-semibold nav-link-hover"
+                  th:href="@{/home}"
+                  >Trang chủ</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link fw-semibold nav-link-hover"
+                  th:href="@{/product}"
+                  >Sản phẩm</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link fw-semibold nav-link-hover"
+                  th:href="@{/introduction}"
+                  >Giới thiệu</a
+                >
+              </li>
+            </ul>
+
+            <!-- SEARCH + CART + ACCOUNT -->
+            <div class="d-flex align-items-center gap-3">
+              <!-- SEARCH -->
+              <form
+                th:action="@{/product/search}"
+                method="GET"
+                class="position-relative search-form"
+              >
+                <input
+                  class="form-control form-control-sm search-input"
+                  type="search"
+                  name="keyword"
+                  placeholder="Tìm sản phẩm..."
+                  th:value="${keyword}"
+                />
+                <i class="bi bi-search search-icon"></i>
+              </form>
+
+              <!-- CART -->
+              <a
+                href="/cart"
+                class="btn btn-outline-dark cart-btn position-relative shake-on-add"
+              >
+                <i class="bi bi-cart-fill fs-5"></i>
+                <span
+                  class="cart-badge"
+                  th:text="${cartItemCount > 0 ? cartItemCount : ''}"
+                  th:if="${cartItemCount > 0}"
+                ></span>
+              </a>
+
+              <!-- ACCOUNT DROPDOWN -->
+              <div class="dropdown">
+                <button
+                  class="btn btn-outline-dark btn-sm rounded-pill px-3 dropdown-toggle"
+                  type="button"
+                  id="accountDropdown"
+                  data-bs-toggle="dropdown"
+                >
+                  <i class="bi bi-person-circle me-1"></i>
+                  <span
+                    th:text="${session.user != null ? session.user.fullname : 'Tài khoản'}"
+                  ></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end animate-dropdown">
+                  <li th:if="${session.user != null}">
+                    <a class="dropdown-item" th:href="@{/orders}"
+                      ><i class="bi bi-receipt"></i> Đơn hàng</a
+                    >
+                  </li>
+                  <li th:if="${session.user != null}">
+                    <a class="dropdown-item" th:href="@{/user/edit}"
+                      ><i class="bi bi-pencil-square"></i> Thông tin cá nhân</a
+                    >
+                  </li>
+                  <li th:if="${session.user != null}">
+                    <a class="dropdown-item text-danger" th:href="@{/logout}"
+                      ><i class="bi bi-box-arrow-right"></i> Đăng xuất</a
+                    >
+                  </li>
+                  <li th:if="${session.user == null}">
+                    <a class="dropdown-item" th:href="@{/login}"
+                      ><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</a
+                    >
+                  </li>
+                  <li th:if="${session.user == null}">
+                    <a class="dropdown-item" th:href="@{/register}"
+                      ><i class="bi bi-person-plus"></i> Đăng ký</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </body>
+</html>

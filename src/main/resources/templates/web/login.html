@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng Nhập</title>
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+      <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
+      <link rel="stylesheet" th:href="@{/css/header.css}">
+</head>
+<body>
+<!-- Header -->
+  <div th:replace="fragments/header :: siteHeader"></div>
+
+    <div class="container my-5">
+        <h2 class="text-center mb-4" style="font-family: 'Arial', sans-serif; font-weight: 700;">Đăng Nhập</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div th:if="${message}" class="alert alert-danger" th:text="${message}"></div>
+
+                        <form th:action="@{/perform_login}" method="POST">
+                            <div class="mb-3 position-relative">
+                                <label for="username" class="form-label">Tên đăng nhập</label>
+                                <input type="text" class="form-control" id="username" name="username" th:value="${username}" required placeholder="Nhập tên đăng nhập">
+                            </div>
+                            <div class="mb-3 position-relative">
+                                <label for="password" class="form-label">Mật khẩu</label>
+                                <input type="password" class="form-control" id="password" name="password" required placeholder="Nhập mật khẩu">
+                                <i class="bi bi-eye password-toggle" id="togglePassword"></i>
+                            </div>
+                            <button type="submit" class="btn btn-dark w-100">Đăng Nhập</button>
+                        </form>
+
+                        <div class="text-center mt-3">
+                            <p>Hoặc đăng nhập bằng:</p>
+                            <div class="d-flex gap-2 justify-content-center">
+                                <a th:href="@{/oauth2/authorization/google}" class="btn btn-google w-100">
+                                    <i class="fab fa-google me-2"></i> Google
+                                </a>
+                                <a th:href="@{/oauth2/authorization/facebook}" class="btn btn-facebook w-100">
+                                    <i class="fab fa-facebook-f me-2"></i> Facebook
+                                </a>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p>
+                                Bạn chưa có tài khoản? <a href="/register" class="text-dark">Đăng ký ngay</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="backToTop" title="Lên đầu trang">↑</button>
+	<script src="https://app.tudongchat.com/js/chatbox.js"></script>
+	<script>
+		const tudong_chatbox = new TuDongChat('rcAWY0gPAIyrID6TbMt_5')
+		tudong_chatbox.initial()
+	</script>
+	<!-- Footer -->
+  <div th:replace="fragments/footer :: siteFooter"></div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/js/login.js"></script>
+</body>
+</html>

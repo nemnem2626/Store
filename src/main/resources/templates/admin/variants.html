@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quản lý Biến thể - STORE®</title>
+    <!-- AdminLTE & Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+      <!-- Navbar -->
+      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"
+              ><i class="fas fa-bars"></i
+            ></a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar -->
+      <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <a href="#" class="brand-link">
+          <span class="brand-text font-weight-light">Admin Panel</span></a
+        >
+        <div class="sidebar">
+          <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+              <li class="nav-item">
+                <a th:href="@{/admin/index}" class="nav-link"
+                  ><i class="nav-icon fas fa-home"></i>
+                  <p>Trang chủ</p></a
+                >
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/admin/products}" class="nav-link"
+                  ><i class="nav-icon fas fa-box"></i>
+                  <p>Quản lý sản phẩm</p></a
+                >
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/admin/variants}" class="nav-link active"
+                  ><i class="nav-icon fas fa-cogs"></i>
+                  <p>Quản lý biến thể</p></a
+                >
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/admin/orders}" class="nav-link"
+                  ><i class="nav-icon fas fa-shopping-cart"></i>
+                  <p>Quản lý đơn hàng</p></a
+                >
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/admin/users}" class="nav-link"
+                  ><i class="nav-icon fas fa-users"></i>
+                  <p>Quản lý người dùng</p></a
+                >
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/admin/categories}" class="nav-link"
+                  ><i class="nav-icon fas fa-list"></i>
+                  <p>Quản lý danh mục</p></a
+                >
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/logout}" class="nav-link"
+                  ><i class="nav-icon fas fa-arrow-right-from-bracket"></i>
+                  <p>Đăng xuất</p></a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Content Wrapper -->
+      <div class="content-wrapper">
+        <div class="container mt-4">
+          <h2 class="mb-3">Quản lý Biến thể</h2>
+
+          <!-- Form thêm/sửa biến thể -->
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h5
+                class="card-title"
+                th:text="${variant != null && variant.id != null ? 'Chỉnh sửa biến thể' : 'Thêm biến thể mới'}"
+              ></h5>
+            </div>
+            <div class="card-body">
+              <form
+                th:action="@{/admin/variants/save}"
+                th:object="${variant}"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <input type="hidden" th:field="*{id}" />
+                <div class="form-group">
+                  <label for="product">Sản phẩm:</label>
+                  <select class="form-control" th:field="*{product}">
+                    <option value="">Chọn sản phẩm</option>
+                    <option
+                      th:each="prod : ${products}"
+                      th:value="${prod.id}"
+                      th:text="${prod.name}"
+                      th:selected="${variant.product != null && variant.product.id == prod.id}"
+                    ></option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="size">Size:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    th:field="*{size}"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="color">Màu:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    th:field="*{color}"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="price">Giá:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    th:field="*{price}"
+                    step="0.01"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Số lượng</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    th:field="*{stock}"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="imageFiles">Ảnh biến thể:</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    name="imageFiles"
+                    multiple
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-success"
+                  th:text="${variant != null && variant.id != null ? 'Cập nhật' : 'Thêm biến thể'}"
+                ></button>
+                <a th:href="@{/admin/variants}" class="btn btn-secondary"
+                  >Hủy</a
+                >
+              </form>
+            </div>
+          </div>
+
+          <!-- Bảng danh sách biến thể -->
+          <div class="card mt-4">
+            <div class="card-header bg-dark text-white">
+              <h5 class="card-title">Danh sách biến thể</h5>
+            </div>
+            <div class="card-body">
+              <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                  <tr>
+                    <th width="5%">ID</th>
+                    <th width="30%">Sản phẩm</th>
+                    <th width="5%">Size</th>
+                    <th width="10%">Màu</th>
+                    <th width="15%">Giá</th>
+                    <th width="15%">Số lượng</th>
+                    <th width="30%">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="variant : ${variants}">
+                    <td th:text="${variant.id}"></td>
+                    <td
+                      th:text="${variant.product != null ? variant.product.name : 'Không có sản phẩm'}"
+                    ></td>
+                    <td th:text="${variant.size}"></td>
+                    <td th:text="${variant.color}"></td>
+                    <td
+                      th:text="${#numbers.formatDecimal(variant.price, 0, 'COMMA', 2, 'POINT')} + ' VNĐ'"
+                    ></td>
+                    <td th:text="${variant.stock}"></td>
+                    <td>
+                      <a
+                        th:href="@{/admin/variants/edit/{id}(id=${variant.id})}"
+                        class="btn btn-warning btn-sm"
+                      >
+                        <i class="fas fa-edit"></i> Sửa
+                      </a>
+                      <a
+                        th:href="@{/admin/variants/delete/{id}(id=${variant.id})}"
+                        class="btn btn-danger btn-sm"
+                        onclick="
+                          return confirm('Bạn có chắc muốn xóa biến thể này?');
+                        "
+                      >
+                        <i class="fas fa-trash"></i> Xóa
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+  </body>
+</html>

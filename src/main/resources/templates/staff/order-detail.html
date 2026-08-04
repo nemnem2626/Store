@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chi tiết Đơn hàng - LENUP®</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a></li>
+            </ul>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="#" class="brand-link"><span class="brand-text font-weight-light">Admin Panel</span></a>
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+                        <li class="nav-item"><a th:href="@{/staff/index}" class="nav-link"><i class="nav-icon fas fa-home"></i><p>Trang chủ</p></a></li>
+                        <li class="nav-item"><a th:href="@{/staff/orders}" class="nav-link active"><i class="nav-icon fas fa-shopping-cart"></i><p>Quản lý đơn hàng</p></a></li>
+                        <li class="nav-item"><a th:href="@{/logout}" class="nav-link"><i class="nav-icon fas fa-arrow-right-from-bracket"></i><p>Đăng xuất</p></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <div class="container mt-4">
+                <h2>Chi tiết đơn hàng #<span th:text="${order.id}"></span></h2>
+
+                <!-- Thông báo -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert" th:text="${success}">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" th:text="${error}">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p><strong>Họ tên:</strong> <span th:text="${order.fullname}"></span></p>
+                        <p><strong>Điện thoại:</strong> <span th:text="${order.phone}"></span></p>
+                        <p><strong>Địa chỉ:</strong> <span th:text="${order.address}"></span></p>
+                        <p><strong>Phương thức thanh toán:</strong> <span th:text="${order.paymentMethod}"></span></p>
+                        <p><strong>Ngày đặt:</strong> <span th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></span></p>
+                        <p><strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 2, 'POINT')} + ' VNĐ'"></span></p>
+                    </div>
+                </div>
+
+                <h3 class="mb-3">Danh sách sản phẩm</h3>
+                <table class="table table-striped table-bordered">
+				    <thead class="thead-dark">
+				        <tr>
+				            <th scope="col">Tên sản phẩm</th>
+				            <th scope="col">Size</th> 
+				            <th scope="col">Màu</th>
+				            <th scope="col">Số lượng</th>
+				            <th scope="col">Đơn giá</th>
+				            <th scope="col">Tổng</th>
+				        </tr>
+				    </thead>
+				    <tbody>
+				        <tr th:each="item : ${order.orderDetails}">
+				            <td th:text="${item.variant != null && item.variant.product != null ? item.variant.product.name : 'Không có'}"></td>
+				            <td th:text="${item.variant != null ? item.variant.size : 'N/A'}"></td> 
+				            <td th:text="${item.variant != null ? item.variant.color : 'N/A'}"></td>
+				            <td th:text="${item.quantity != null ? item.quantity : 'N/A'}"></td>
+				            <td th:text="${item.price != null ? #numbers.formatDecimal(item.price, 0, 'COMMA', 2, 'POINT') + ' VNĐ' : 'N/A'}"></td>
+				            <td>
+				                <span th:if="${item.price != null and item.quantity != null}">
+				                    <span th:text="${#numbers.formatDecimal(item.price.multiply(T(java.math.BigDecimal).valueOf(item.quantity.longValue())), 0, 'COMMA', 2, 'POINT') + ' VNĐ'}"></span>
+				                </span>
+				                <span th:unless="${item.price != null and item.quantity != null}">N/A</span>
+				            </td>
+				        </tr>
+				    </tbody>
+</table>
+
+                <h4 class="mt-4">Cập nhật trạng thái đơn hàng</h4>
+                <form th:action="@{/staff/orders/{id}/status(id=${order.id})}" method="POST">
+                    <div class="form-group">
+                        <label for="status">Trạng thái:</label>
+                        <select id="status" name="status" class="form-control">
+						    <option value="PENDING" th:selected="${order.status == 'PENDING'}" th:text="'Chờ xử lý'"></option>
+						    <option value="SHIPPING" th:selected="${order.status == 'SHIPPING'}" th:text="'Đang giao'"></option>
+						    <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}" th:text="'Đã giao'"></option>
+						    <option value="CANCELED" th:selected="${order.status == 'CANCELED'}" th:text="'Đã hủy'"></option>
+						</select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

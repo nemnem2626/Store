@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đặt hàng thành công</title>
+    <!-- Bootstrap 5 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}" />
+    <link rel="stylesheet" th:href="@{/css/cartsuccess.css}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+  </head>
+  <body>
+    <!-- Header -->
+    <div th:replace="fragments/header :: siteHeader"></div>
+
+    <div class="success-container">
+      <div class="container my-5 d-flex justify-content-center">
+        <div class="card shadow-lg p-4 text-center">
+          <div class="card-content">
+            <div class="text-success mb-3">
+              <i class="bi bi-check-circle-fill" style="font-size: 4rem"></i>
+            </div>
+            <h3 class="fw-bold text-success">Đặt hàng thành công!</h3>
+            <p class="mt-3 text-muted">
+              Cảm ơn bạn đã mua hàng tại LENUP®. Đơn hàng của bạn đã được xử lý.
+            </p>
+            <p class="text-muted">
+              Bạn có thể theo dõi đơn hàng
+              <a th:href="@{/orders}" class="text-decoration-none">tại đây</a>
+              hoặc trong mục Quản lý đơn hàng.
+            </p>
+            <a href="/home" class="btn btn-outline-dark rounded-pill px-4">
+              <i class="bi bi-shop"></i> Trở lại trang chủ
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Back to Top Button -->
+    <button id="backToTop" title="Lên đầu trang">↑</button>
+
+    <script src="https://app.tudongchat.com/js/chatbox.js"></script>
+    <script>
+      const tudong_chatbox = new TuDongChat("rcAWY0gPAIyrID6TbMt_5");
+      tudong_chatbox.initial();
+    </script>
+    <div th:replace="fragments/footer :: siteFooter"></div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <!--   <script th:src="@{/js/home.js}"></script> -->
+  </body>
+</html>

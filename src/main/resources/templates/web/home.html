@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STORE® - Trang chủ</title>
+    <!-- Bootstrap 5 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/banner-slideshow.css}" />
+    <link rel="stylesheet" th:href="@{/css/carousel.css}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}" />
+  </head>
+  <body>
+    <!-- Header -->
+    <div th:replace="fragments/header :: siteHeader"></div>
+
+    <!-- Banner Slideshow -->
+    <div id="wrapper">
+      <section class="slideshow" id="js-header">
+        <!-- Slide 1 -->
+        <div
+          class="slideshow__slide js-slider-home-slide is-current"
+          data-slide="1"
+        >
+          <div
+            class="slideshow__slide-background-parallax background-absolute js-parallax"
+            data-speed="-1"
+            data-position="top"
+            data-target="#js-header"
+          >
+            <div
+              class="slideshow__slide-background-load-wrap background-absolute"
+            >
+              <div class="slideshow__slide-background-load background-absolute">
+                <div
+                  class="slideshow__slide-background-wrap background-absolute"
+                >
+                  <div class="slideshow__slide-background background-absolute">
+                    <div
+                      class="slideshow__slide-image-wrap background-absolute"
+                    >
+                      <div
+                        class="slideshow__slide-image background-absolute"
+                        style="
+                          background-image: url(&quot;/images/banner1.jpg&quot;);
+                        "
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slideshow__slide-caption">
+            <div class="slideshow__slide-caption-text">
+              <div
+                class="container js-parallax"
+                data-speed="2"
+                data-position="top"
+                data-target="#js-header"
+              >
+                <h1 class="slideshow__slide-caption-title">
+                  Sản phẩm mới nhất
+                </h1>
+                <a
+                  class="slideshow__slide-caption-subtitle -load o-hsub -link"
+                  href="/products"
+                >
+                  <span
+                    class="slideshow__slide-caption-subtitle-label"
+                    style="color: white"
+                    >Khám phá bộ sưu tập mới nhất</span
+                  >
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 2 -->
+        <div
+          class="slideshow__slide js-slider-home-slide is-next"
+          data-slide="2"
+        >
+          <div
+            class="slideshow__slide-background-parallax background-absolute js-parallax"
+            data-speed="-1"
+            data-position="top"
+            data-target="#js-header"
+          >
+            <div
+              class="slideshow__slide-background-load-wrap background-absolute"
+            >
+              <div class="slideshow__slide-background-load background-absolute">
+                <div
+                  class="slideshow__slide-background-wrap background-absolute"
+                >
+                  <div class="slideshow__slide-background background-absolute">
+                    <div
+                      class="slideshow__slide-image-wrap background-absolute"
+                    >
+                      <div
+                        class="slideshow__slide-image background-absolute"
+                        style="
+                          background-image: url(&quot;/images/banner2.jpg&quot;);
+                        "
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slideshow__slide-caption">
+            <div class="slideshow__slide-caption-text">
+              <div
+                class="container js-parallax"
+                data-speed="2"
+                data-position="top"
+                data-target="#js-header"
+              >
+                <h1 class="slideshow__slide-caption-title">
+                  Phong cách hiện đại
+                </h1>
+                <a
+                  class="slideshow__slide-caption-subtitle -load o-hsub -link"
+                  href="/products"
+                >
+                  <span
+                    class="slideshow__slide-caption-subtitle-label"
+                    style="color: white"
+                  ></span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 3 -->
+        <div
+          class="slideshow__slide js-slider-home-slide is-prev"
+          data-slide="3"
+        >
+          <div
+            class="slideshow__slide-background-parallax background-absolute js-parallax"
+            data-speed="-1"
+            data-position="top"
+            data-target="#js-header"
+          >
+            <div
+              class="slideshow__slide-background-load-wrap background-absolute"
+            >
+              <div class="slideshow__slide-background-load background-absolute">
+                <div
+                  class="slideshow__slide-background-wrap background-absolute"
+                >
+                  <div class="slideshow__slide-background background-absolute">
+                    <div
+                      class="slideshow__slide-image-wrap background-absolute"
+                    >
+                      <div
+                        class="slideshow__slide-image background-absolute"
+                        style="
+                          background-image: url(&quot;/images/banner3.jpg&quot;);
+                        "
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slideshow__slide-caption">
+            <div class="slideshow__slide-caption-text">
+              <div
+                class="container js-parallax"
+                data-speed="2"
+                data-position="top"
+                data-target="#js-header"
+              >
+                <h1 class="slideshow__slide-caption-title"></h1>
+                <a
+                  class="slideshow__slide-caption-subtitle -load o-hsub -link"
+                  href="/products"
+                >
+                  <span
+                    class="slideshow__slide-caption-subtitle-label"
+                    style="color: white"
+                  ></span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Controls -->
+        <div class="slideshow__controls">
+          <button
+            class="o-button -white -square js-slider-home-prev crescent-arrow"
+            type="button"
+          >
+            <span class="o-button_label">
+              <svg
+                class="o-button_icon"
+                role="img"
+                viewBox="0 0 200 200"
+                preserveAspectRatio="xMidYMid slice"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <!-- Nửa hình tròn bên trái (mở sang trái) -->
+                <path
+                  class="semi-circle-bg"
+                  d="M100,0 A150,150 0 0,1 100,200 L100,100 Z"
+                  fill="#ffffff"
+                  opacity="0.1"
+                />
+                <!-- Mũi tên trái (nhỏ, chỉ sang trái, ở trung tâm) -->
+                <polygon
+                  class="arrow"
+                  points="120,95 110,100 120,105"
+                  fill="#ffffff"
+                />
+              </svg>
+            </span>
+          </button>
+          <button
+            class="o-button -white -square js-slider-home-next crescent-arrow"
+            type="button"
+          >
+            <span class="o-button_label">
+              <svg
+                class="o-button_icon"
+                role="img"
+                viewBox="0 0 200 200"
+                preserveAspectRatio="xMidYMid slice"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <!-- Nửa hình tròn bên phải (mở sang phải) -->
+                <path
+                  class="semi-circle-bg"
+                  d="M100,0 A150,150 0 0,0 100,200 L100,100 Z"
+                  fill="#ffffff"
+                  opacity="0.1"
+                />
+                <!-- Mũi tên phải (nhỏ, chỉ sang phải, ở trung tâm) -->
+                <polygon
+                  class="arrow"
+                  points="80,105 90,100 80,95"
+                  fill="#ffffff"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Slideshow sản phẩm mới -->
+    <div class="container my-5">
+      <h3 class="mb-4">Sản phẩm mới & hot</h3>
+      <div class="linear-carousel">
+        <div class="carousel-track" id="carouselTrack">
+          <div th:each="product : ${newProducts}" class="product-card">
+            <a
+              th:href="@{/product/detail/{id}(id=${product.id})}"
+              class="text-decoration-none text-dark"
+            >
+              <img
+                th:src="${imageUrls[product.id]}"
+                class="card-img-top"
+                th:alt="${product.name}"
+              />
+              <div class="product-info">
+                <h6 class="card-title" th:text="${product.name}">Sản phẩm</h6>
+                <p>
+                  <span th:if="${formattedPrices[product.id] == '0'}">
+                    <strong class="text-warning">Sắp ra mắt</strong>
+                  </span>
+                  <span th:unless="${formattedPrices[product.id] == '0'}">
+                    <strong
+                      th:text="'₫' + ${formattedPrices[product.id]}"
+                    ></strong>
+                  </span>
+                </p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" title="Lên đầu trang">↑</button>
+
+    <script src="https://app.tudongchat.com/js/chatbox.js"></script>
+    <script>
+      const tudong_chatbox = new TuDongChat("rcAWY0gPAIyrID6TbMt_5");
+      tudong_chatbox.initial();
+    </script>
+
+    <div th:replace="fragments/footer :: siteFooter"></div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script type="module" src="/js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+/* ================== Slideshow sản phẩm ================== */
+.linear-carousel {
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  animation: scroll 10s linear infinite;
+  width: calc(250px * 5);
+}
+
+.carousel-track:hover {
+  animation-play-state: paused;
+}
+
+.product-card {
+  flex: 0 0 250px;
+  margin-right: 15px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  height: 280px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.product-card img.card-img-top {
+  height: 160px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.product-card .product-info {
+  padding: 10px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  background: rgba(255,255,255,0.9);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(20px);
+}
+
+.product-card:hover .product-info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-card .card-title {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.product-card .product-info p {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.product-card .product-info del {
+  color: #666;
+  margin-right: 5px;
+}
+
+.product-card .text-danger,
+.product-card .text-warning {
+  font-weight: bold;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-250px * 5)); }
+}
+
+/* @media (max-width: 992px) {
+  .product-card {
+    flex: 0 0 200px;
+    height: 260px;
+  }
+  .product-card img.card-img-top {
+    height: 140px;
+  }
+  .carousel-track {
+    width: calc(200px * 10);
+  }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-200px * 10)); }
+  }
+}
+
+@media (max-width: 576px) {
+  .product-card {
+    flex: 0 0 280px;
+    max-width: 280px;
+    margin: 0 auto 15px;
+  }
+  .carousel-track {
+    width: calc(280px * 10);
+  }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-280px * 10)); }
+  }
+}
+ */

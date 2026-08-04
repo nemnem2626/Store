@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới Thiệu Về LENUP®</title>
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/introduction.css}">
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="fragments/header :: siteHeader"></div>
+
+    <!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h2 class="hero-title" style="color:white">Khám Phá LENUP®</h2>
+        <p class="hero-subtitle" style="color:#F0F0F0">
+            Nơi thời trang giao thoa với phong cách sống - Thương hiệu Việt Nam mang đến thiết kế độc đáo và chất lượng vượt trội.
+        </p>
+    </div>
+</section>
+
+
+    <!-- Lịch Sử Hình Thành -->
+    <section class="history-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h3>Hành Trình Của LENUP®</h3>
+                    <p>Ra đời vào năm 2025 tại Thành phố Hồ Chí Minh, LENUP® bắt đầu từ đam mê thời trang đường phố và khát vọng mang đến giới trẻ Việt Nam những sản phẩm chất lượng, giá cả hợp lý. Từ một xưởng nhỏ, chúng tôi đã vươn lên trở thành một local brand được yêu mến với phong cách riêng biệt.</p>
+                    <p>Với triết lý "Tinh thần Việt, tầm vóc quốc tế", LENUP® không ngừng đổi mới, hòa quyện xu hướng toàn cầu với bản sắc văn hóa Việt trong từng thiết kế.</p>
+                </div>
+                <div class="col-md-6">
+                    <img src="/images/lichsuhinhthanh.jpg" alt="Hành trình LENUP" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Đội Ngũ -->
+    <section class="team-section">
+        <div class="container">
+            <h3>Đội Ngũ LENUP®</h3>
+            <p>Một tập thể đam mê, sáng tạo, và tận tâm tạo nên những sản phẩm đẳng cấp.</p>
+            <div class="row justify-content-center gy-4">
+                <div class="col-md-3 col-6 team-member">
+                    <img src="/images/avatar.jpg" alt="Võ Thái An" class="team-img img-fluid rounded-circle">
+                    <h5>Võ Thái A</h5>
+                    <p>Founder & CEO</p>
+                </div>
+                <div class="col-md-3 col-6 team-member">
+                    <img src="/images/avatar.jpg" alt="Võ Huỳnh Vĩ Khang" class="team-img img-fluid rounded-circle">
+                    <h5>Võ Huỳnh Vĩ B</h5>
+                    <p>Backend Developer</p>
+                </div>
+                <div class="col-md-3 col-6 team-member">
+                    <img src="/images/avatar.jpg" alt="Trần Thị Phương Linh" class="team-img img-fluid rounded-circle">
+                    <h5>Trần Thị Phương C</h5>
+                    <p>Backend Developer</p>
+                </div>
+                <div class="col-md-3 col-6 team-member">
+                    <img src="/images/avatar.jpg" alt="Mai Anh Tuấn" class="team-img img-fluid rounded-circle">
+                    <h5>Mai Anh D</h5>
+                    <p>Backend Developer</p>
+                </div>
+                <div class="col-md-3 col-6 team-member">
+                    <img src="/images/avatar.jpg" alt="Võ Hoàng Chương" class="team-img img-fluid rounded-circle">
+                    <h5>Võ Hoàng E</h5>
+                    <p>Frontend Developer</p>
+                </div>
+                <div class="col-md-3 col-6 team-member">
+                    <img src="/images/avatar.jpg" alt="Lại Nguyễn Hoàng Long" class="team-img img-fluid rounded-circle">
+                    <h5>Lại Nguyễn Hoàng F</h5>
+                    <p>Frontend Developer</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phong Cách và Sản Phẩm -->
+    <section class="products-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 order-md-2">
+                    <img src="/images/cp(edited).jpg" alt="Sản phẩm LENUP" class="img-fluid product-img rounded">
+                </div>
+                <div class="col-md-6 order-md-1">
+                    <h3>Thiết Kế và Sản Phẩm</h3>
+                    <p>LENUP® nổi bật với phong cách hiện đại, hòa quyện nét văn hóa Việt Nam. Bộ sưu tập của chúng tôi bao gồm áo thun, hoodie, quần jeans, cùng phụ kiện như mũ và túi xách thời thượng.</p>
+                    <p>Sử dụng chất liệu cotton cao cấp và công nghệ in ấn tiên tiến, mỗi sản phẩm được thiết kế để đồng hành cùng phong cách sống năng động, trẻ trung.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cam Kết Với Khách Hàng -->
+    <section class="commitment-section">
+        <div class="container">
+            <h3>Cam Kết Với Bạn</h3>
+            <div class="row gy-4 text-center">
+                <div class="col-md-4 commitment-item">
+                    <i class="fas fa-check-circle fa-3x text-primary mb-3"></i>
+                    <h5>Chất Lượng Đỉnh Cao</h5>
+                    <p>Sản phẩm được làm từ nguyên liệu cao cấp, kiểm định kỹ lưỡng.</p>
+                </div>
+                <div class="col-md-4 commitment-item">
+                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                    <h5>Bảo Hành Đổi Trả</h5>
+                    <p>Đổi trả dễ dàng trong 30 ngày, 1 đổi 1 cho mọi lỗi sản xuất.</p>
+                </div>
+                <div class="col-md-4 commitment-item">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h5>Hỗ Trợ Tận Tâm</h5>
+                    <p>Đội ngũ sẵn sàng hỗ trợ 24/7 qua hotline và mạng xã hội.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cộng Đồng và Sự Kiện -->
+    <section class="community-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h3>Cộng Đồng LENUP®</h3>
+                    <p>LENUP® không chỉ là thương hiệu mà còn là nơi kết nối những tâm hồn yêu thời trang. Chúng tôi tổ chức sự kiện offline, hợp tác với KOLs, và mang đến trải nghiệm độc đáo cho cộng đồng.</p>
+                    <p>Theo dõi chúng tôi trên mạng xã hội để không bỏ lỡ các ưu đãi và sự kiện hấp dẫn!</p>
+                </div>
+                <div class="col-md-6">
+                    <img src="/images/anhsukien.jpg" alt="Sự kiện LENUP" class="img-fluid community-img rounded">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div th:replace="fragments/footer :: siteFooter"></div>
+<!-- Back to Top Button -->
+<button id="backToTop" title="Lên đầu trang">↑</button>
+
+<script src="https://app.tudongchat.com/js/chatbox.js"></script>
+<script>
+  const tudong_chatbox = new TuDongChat('rcAWY0gPAIyrID6TbMt_5')
+  tudong_chatbox.initial()
+</script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script type="module" src="/js/main.js"></script>
+</body>
+</html>

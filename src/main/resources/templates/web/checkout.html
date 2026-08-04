@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán</title>
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+</head>
+<body>
+<!-- Header -->
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<div class="checkout-container pb-2 pt-2">
+    <div class="container">
+        <h2 class="mb-4 text-center text-dark">Thông tin đặt hàng</h2>
+
+        <div th:if="${error}" class="alert alert-danger text-center" role="alert" th:text="${error}"></div>
+
+        <!-- Sản phẩm trong giỏ hàng -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Sản phẩm trong giỏ hàng</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tên sản phẩm</th>
+                                <th>Size</th>
+                                <th>Màu</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${cartItems}" th:if="${not #lists.isEmpty(cartItems)}">
+                                <td th:text="${item.productName}"></td>
+                                <td th:text="${item.size ?: 'N/A'}"></td>
+                                <td th:text="${item.color ?: 'N/A'}"></td>
+                                <td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA') + ' VNĐ'}"></td>
+                                <td th:text="${item.quantity}"></td>
+                                <td th:text="${#numbers.formatInteger(item.getTotalPrice(), 0, 'COMMA') + ' VNĐ'}"></td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(cartItems)}">
+                                <td colspan="6" class="text-center text-muted">Giỏ hàng trống</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="text-end">
+                    <label class="fw-bold me-2">Tổng tiền:</label>
+                    <span th:text="${#numbers.formatInteger(cartTotal, 0, 'COMMA') + ' VNĐ'}" class="fw-bold text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông tin người nhận -->
+        <form th:action="@{/cart/process-payment}" method="post" class="needs-validation" novalidate onsubmit="return validateCheckoutForm(event)">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Thông tin người nhận</h5>
+                </div>
+                <div class="card-body row g-3">
+                    <div class="col-md-6">
+                        <label for="fullname" class="form-label">Họ và tên:<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="fullname" name="fullname" th:value="${user?.fullname ?: ''}" required>
+                        <small id="fullnameError" class="text-danger" style="display: none;"></small>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">Số điện thoại:<span class="text-danger">*</span></label>
+                        <input type="tel" class="form-control" id="phone" name="phone" th:value="${user?.phone ?: ''}" required>
+                        <small id="phoneError" class="text-danger" style="display: none;"></small>
+                    </div>
+                    <div class="col-12">
+                        <label for="address" class="form-label">Địa chỉ:<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="address" name="address" required>
+                        <small id="addressError" class="text-danger" style="display: none;"></small>
+                    </div>
+                    <div class="col-12">
+                        <label for="paymentMethod" class="form-label">Hình thức thanh toán:<span class="text-danger">*</span></label>
+                        <select class="form-select" id="paymentMethod" name="paymentMethod" required>
+                            <option value="">Chọn phương thức thanh toán</option>
+                            <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+                            <option value="VNPAY">Thanh toán qua VNPAY</option>
+                        </select>
+                        <small id="paymentMethodError" class="text-danger" style="display: none;"></small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success btn-lg px-5 shadow">Xác nhận đặt hàng</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Back to Top Button -->
+<button id="backToTop" title="Lên đầu trang">↑</button>
+<script src="https://app.tudongchat.com/js/chatbox.js"></script>
+	<script>
+		const tudong_chatbox = new TuDongChat('rcAWY0gPAIyrID6TbMt_5')
+		tudong_chatbox.initial()
+	</script>
+<div th:replace="~{fragments/footer :: siteFooter}"></div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS -->
+<script type="module" src="/js/main.js"></script>
+<script type="module" src="/js/backtotop.js"></script>
+<script type="module" src="/js/checkout.js"></script>
+<script>
+    function validateCheckoutForm(event) {
+        event.preventDefault();
+
+        const fullname = document.getElementById('fullname').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        const fullnameError = document.getElementById('fullnameError');
+        const phoneError = document.getElementById('phoneError');
+        const addressError = document.getElementById('addressError');
+        const paymentMethodError = document.getElementById('paymentMethodError');
+
+        // Reset lỗi
+        fullnameError.style.display = 'none';
+        phoneError.style.display = 'none';
+        addressError.style.display = 'none';
+        paymentMethodError.style.display = 'none';
+
+        // Kiểm tra fullname (chỉ chứa chữ cái Unicode và khoảng trắng, không chứa số hoặc ký tự đặc biệt)
+        try {
+            if (!/^[^\d\s][\p{L}\s]*$/u.test(fullname)) {
+                fullnameError.textContent = 'Họ và tên chỉ được chứa chữ cái và khoảng trắng!';
+                fullnameError.style.display = 'block';
+                return false;
+            }
+        } catch (e) {
+            // Dự phòng cho trình duyệt không hỗ trợ cờ Unicode 'u'
+            if (fullname === '' || !/^[^\d\s][a-zA-Z\s]*$/.test(fullname)) {
+                fullnameError.textContent = 'Họ và tên chỉ được chứa chữ cái và khoảng trắng!';
+                fullnameError.style.display = 'block';
+                return false;
+            }
+        }
+
+        // Kiểm tra phone
+        if (!/^\d{10}$/.test(phone)) {
+            phoneError.textContent = 'Số điện thoại phải là 10 chữ số!';
+            phoneError.style.display = 'block';
+            return false;
+        }
+
+        // Kiểm tra address
+        if (address === '') {
+            addressError.textContent = 'Địa chỉ không được để trống!';
+            addressError.style.display = 'block';
+            return false;
+        }
+
+        // Kiểm tra paymentMethod
+        if (paymentMethod === '') {
+            paymentMethodError.textContent = 'Vui lòng chọn phương thức thanh toán!';
+            paymentMethodError.style.display = 'block';
+            return false;
+        }
+
+        // Nếu không có lỗi, submit form
+        event.target.submit();
+        return true;
+    }
+
+    // Bootstrap validation
+    (function () {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+</body>
+</html>

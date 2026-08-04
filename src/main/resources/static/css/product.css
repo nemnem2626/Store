@@ -1,0 +1,69 @@
+/* Product Card */
+.product-card img {
+	width: 100%;
+	height: 250px;
+	object-fit: cover;
+}
+
+/* Custom Active Styles */
+.list-group-item.active {
+	background-color: #000000 !important;
+	color: #ffffff !important;
+}
+
+.pagination .page-item.active .page-link {
+	background-color: #000000 !important;
+	color: #ffffff !important;
+	border-color: #000000 !important;
+}
+
+.pagination .page-link {
+	color: #000000 !important;
+	border-color: #ddd !important;
+}
+
+.pagination .page-item:hover .page-link {
+	background-color: #f0f0f0 !important;
+}
+
+/* Cart Badge */
+.cart-badge {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	background-color: #dc3545;
+	color: white;
+	border-radius: 50%;
+	width: 18px;
+	height: 18px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+}
+
+/* Price Styles */
+.price-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.old-price {
+	text-decoration: line-through;
+	color: #888;
+	font-size: 0.9rem;
+	margin-bottom: 5px;
+}
+
+.new-price {
+	color: #dc3545; /* Màu đỏ nổi bật cho giá mới */
+	font-weight: bold;
+	font-size: 1.1rem;
+}
+
+.new-price.coming-soon {
+	color: #28a745; /* Màu xanh cho "COMING SOON" */
+	font-weight: normal;
+	text-decoration: none;
+}

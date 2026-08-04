@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng Ký</title>
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+    <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+</head>
+<body>
+<!-- Header -->
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-4" style="font-family: 'Arial', sans-serif; font-weight: 700;">Đăng Ký</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div th:if="${message}" class="alert" th:class="${message.startsWith('Đăng ký thành công') ? 'alert-success' : 'alert-danger'}">
+                        <span th:text="${message}"></span>
+                    </div>
+                    <form th:action="@{/register}" method="POST" onsubmit="return validateForm(event)">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Tên đăng ký <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                            <small id="usernameError" class="text-danger" style="display: none;"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" maxlength="10" required>
+                            <small id="phoneError" class="text-danger" style="display: none;"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <small id="passwordError" class="text-danger" style="display: none;"></small>
+                        </div>                    
+                        <button type="submit" class="btn btn-dark w-100">Đăng Ký</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Đã có tài khoản? <a href="/login" class="text-dark">Đăng nhập ngay</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Back to Top Button -->
+<button id="backToTop" title="Lên đầu trang">↑</button>
+<!-- Footer -->
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+
+<script src="https://app.tudongchat.com/js/chatbox.js"></script>
+<script>
+  const tudong_chatbox = new TuDongChat('rcAWY0gPAIyrID6TbMt_5')
+  tudong_chatbox.initial()
+</script>
+<script type="module" src="/js/main.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function validateForm(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const phone = document.getElementById('phone').value;
+        const usernameError = document.getElementById('usernameError');
+        const passwordError = document.getElementById('passwordError');
+        const phoneError = document.getElementById('phoneError');
+
+        // Reset lỗi
+        usernameError.style.display = 'none';
+        passwordError.style.display = 'none';
+        phoneError.style.display = 'none';
+
+        // Kiểm tra username (chỉ chứa chữ cái)
+        if (!/^[a-zA-Z]+$/.test(username)) {
+            usernameError.textContent = 'Tên đăng nhập chỉ được chứa chữ cái!';
+            usernameError.style.display = 'block';
+            return false;
+        }
+
+        // Kiểm tra password (tối thiểu 8 ký tự, chứa chữ và số)
+        if (password.length < 8 || !/(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+            passwordError.textContent = 'Mật khẩu phải có ít nhất 8 ký tự và chứa cả chữ lẫn số!';
+            passwordError.style.display = 'block';
+            return false;
+        }
+
+        // Kiểm tra phone (chỉ chứa số)
+        if (phone && !/^\d+$/.test(phone)) {
+            phoneError.textContent = 'Số điện thoại chỉ được chứa số!';
+            phoneError.style.display = 'block';
+            return false;
+        }
+
+        // Nếu không có lỗi, submit form
+        event.target.submit();
+        return true;
+    }
+</script>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sản phẩm</title>
+<!-- Bootstrap 5 -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Custom CSS -->
+<link rel="stylesheet" th:href="@{/css/product.css}">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
+</head>
+<body>
+	<!-- Header -->
+	<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+	<div class="container my-5">
+		<!-- Tiêu đề -->
+		<h2 class="text-center mb-4">Sản Phẩm</h2>
+
+		<!-- Bộ lọc ngang dạng dropdown -->
+		<div class="container w-75 mx-auto my-4">
+			<div
+				class="d-flex flex-wrap align-items-center gap-3 justify-content-start">
+				<!-- Dropdown Danh mục -->
+				<div class="dropdown">
+					<button class="btn btn-outline-secondary dropdown-toggle"
+						type="button" id="categoryDropdown" data-bs-toggle="dropdown"
+						aria-expanded="false">
+						<span th:text="${selectedCategoryName}">Danh mục</span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+						<li><a class="dropdown-item"
+							th:href="@{/product(page=0, size=${productPage.size}, variantSize=${variantSize}, color=${color})}"
+							th:classappend="${selectedCategory == null ? 'active' : ''}">
+								Tất cả </a></li>
+						<li th:each="category : ${categories}"><a
+							class="dropdown-item"
+							th:href="@{/product/category/{id}(id=${category.id}, page=0, size=${productPage.size}, variantSize=${variantSize}, color=${color})}"
+							th:classappend="${selectedCategory == category.id ? 'active' : ''}"
+							th:text="${category.name}"></a></li>
+					</ul>
+				</div>
+
+				<!-- Dropdown Lọc theo giá -->
+				<div class="dropdown">
+					<button class="btn btn-outline-secondary dropdown-toggle"
+						type="button" id="priceDropdownButton" data-bs-toggle="dropdown"
+						aria-expanded="false">Lọc theo giá</button>
+					<ul class="dropdown-menu" aria-labelledby="priceDropdownButton">
+						<li><a class="dropdown-item price-sort" href="#"
+							data-sort="asc">Thấp đến cao</a></li>
+						<li><a class="dropdown-item price-sort" href="#"
+							data-sort="desc">Cao đến thấp</a></li>
+					</ul>
+				</div>
+
+				<!-- Dropdown Size -->
+				<div class="dropdown">
+					<button class="btn btn-outline-dark dropdown-toggle" type="button"
+						id="sizeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+						<span th:text="${variantSize ?: 'Size'}">Size</span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="sizeDropdown">
+						<li th:if="${sizes != null and !sizes.isEmpty()}"><a
+							class="dropdown-item" th:each="size : ${sizes}" th:text="${size}"
+							th:href="@{/product(variantSize=${size}, page=0, size=${productPage.size}, category=${selectedCategory}, color=${color})}"></a>
+						</li>
+						<li th:if="${sizes == null or sizes.isEmpty()}"><a
+							class="dropdown-item disabled" href="#">Không có kích thước</a></li>
+					</ul>
+				</div>
+
+				<!-- Dropdown Theo màu sắc -->
+				<div class="dropdown">
+					<button class="btn btn-outline-dark dropdown-toggle" type="button"
+						id="colorDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+						<span th:text="${color ?: 'Màu sắc'}">Màu sắc</span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="colorDropdown">
+						<li th:if="${colors != null and !colors.isEmpty()}"><a
+							class="dropdown-item" th:each="color : ${colors}"
+							th:text="${color}"
+							th:href="@{/product(color=${color}, page=0, size=${productPage.size}, category=${selectedCategory}, variantSize=${variantSize})}"></a>
+						</li>
+						<li th:if="${colors == null or colors.isEmpty()}"><a
+							class="dropdown-item disabled" href="#">Không có màu sắc</a></li>
+					</ul>
+				</div>
+
+				<!-- Nút Xóa bộ lọc -->
+				<a class="btn btn-outline-danger" th:if="${isFiltered}"
+					th:href="@{/product(page=0, size=${productPage.size}, category=${selectedCategory})}">Xóa
+					bộ lọc</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Nội dung chính -->
+	<main class="flex-grow-1">
+		<div class="col-12 mb-5">
+			<div class="container px-3">
+				<!-- Danh sách sản phẩm -->
+				<d<div class="row justify-content-center" th:if="${productPage.hasContent()}">
+                    <div th:each="product : ${productPage.content}" class="col-md-4 mb-4">
+                        <div class="card product-card shadow-sm border-0 rounded-3">
+                            <a th:href="@{/product/detail/{id}(id=${product.id})}" class="text-decoration-none text-dark">
+                                <img th:src="${imageUrls[product.id]}" class="card-img-top rounded-3" th:alt="${product.name}">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title" th:text="${product.name}"></h5>
+                                    <div class="price-container">
+                                        <strong class="new-price" th:if="${formattedPrices[product.id] != 'COMING SOON'}"
+                                                th:text="${formattedPrices[product.id] + ' VND'}"></strong>
+                                        <strong class="new-price coming-soon" th:if="${formattedPrices[product.id] == 'COMING SOON'}"
+                                                th:text="'COMING SOON'"></strong>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+				<div class="alert alert-info text-center"
+					th:if="${!productPage.hasContent()}">
+					<p>Không có sản phẩm nào khớp với bộ lọc hoặc trang hiện tại.</p>
+				</div>
+
+				<!-- Phân trang -->
+				<nav aria-label="Page navigation"
+					th:if="${productPage.totalPages > 1}">
+					<ul class="pagination justify-content-center mt-4">
+						<li class="page-item" th:if="${productPage.number > 0}"><a
+							class="page-link text-dark"
+							th:href="@{/product(page=${productPage.number - 1}, size=${productPage.size}, category=${selectedCategory}, variantSize=${variantSize}, color=${color})}"
+							aria-label="Trước">« Trước</a></li>
+						<li class="page-item"
+							th:each="i : ${#numbers.sequence(0, productPage.totalPages - 1)}"
+							th:classappend="${i == productPage.number ? 'active' : ''}">
+							<a class="page-link text-dark"
+							th:href="@{/product(page=${i}, size=${productPage.size}, category=${selectedCategory}, variantSize=${variantSize}, color=${color})}"
+							th:text="${i + 1}"></a>
+						</li>
+						<li class="page-item"
+							th:if="${productPage.number + 1 < productPage.totalPages}">
+							<a class="page-link text-dark"
+							th:href="@{/product(page=${productPage.number + 1}, size=${productPage.size}, category=${selectedCategory}, variantSize=${variantSize}, color=${color})}"
+							aria-label="Sau">Sau »</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</main>
+
+	<!-- Back to Top Button -->
+	<button id="backToTop" title="Lên đầu trang">↑</button>
+	<script src="https://app.tudongchat.com/js/chatbox.js"></script>
+	<script>
+		const tudong_chatbox = new TuDongChat('rcAWY0gPAIyrID6TbMt_5')
+		tudong_chatbox.initial()
+	</script>
+
+	<div th:replace="~{fragments/footer :: siteFooter}"></div>
+	<!-- Bootstrap JS -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Custom JS -->
+	<script type="module" src="/js/main.js"></script>
+</body>
+</html>
