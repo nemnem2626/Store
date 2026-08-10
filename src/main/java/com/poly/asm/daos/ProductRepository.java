@@ -23,16 +23,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     Page<Product> findByCategoryIdAndIdNot(Long categoryId, Long id, Pageable pageable);
 
-    @Query("SELECT DISTINCT p FROM Product p JOIN p.variants v WHERE (:variantSize IS NULL OR v.size = :variantSize) OR (:color IS NULL OR v.color = :color)")
+    @Query("SELECT DISTINCT p FROM Product p JOIN p.variants v WHERE (:variantSize IS NULL OR :variantSize = '' OR v.size = :variantSize) AND (:color IS NULL OR :color = '' OR v.color = :color)")
     Page<Product> findByVariantAttributes(@Param("variantSize") String variantSize, @Param("color") String color, Pageable pageable);
     
-    @Query("SELECT DISTINCT p FROM Product p LEFT JOIN p.variants v WHERE p.category.id = :categoryId AND " +
-    	       "((:variantSize IS NULL OR v.size = :variantSize) OR (:color IS NULL OR v.color = :color) OR v.id IS NULL)")
+    @Query("SELECT DISTINCT p FROM Product p JOIN p.variants v WHERE p.category.id = :categoryId AND " +
+    	       "(:variantSize IS NULL OR :variantSize = '' OR v.size = :variantSize) AND (:color IS NULL OR :color = '' OR v.color = :color)")
     	Page<Product> findByCategoryIdAndVariantAttributes(@Param("categoryId") Long categoryId, 
     	                                                  @Param("variantSize") String variantSize, 
     	                                                  @Param("color") String color, 
     	                                                  Pageable pageable);
 
-    @Query("SELECT DISTINCT p FROM Product p JOIN p.variants v WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) AND ( (:variantSize IS NULL OR v.size = :variantSize) OR (:color IS NULL OR v.color = :color) )")
+    @Query("SELECT DISTINCT p FROM Product p JOIN p.variants v WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) AND (:variantSize IS NULL OR :variantSize = '' OR v.size = :variantSize) AND (:color IS NULL OR :color = '' OR v.color = :color)")
     Page<Product> findByNameContainingIgnoreCaseAndVariantAttributes(@Param("keyword") String keyword, @Param("variantSize") String variantSize, @Param("color") String color, Pageable pageable);
 }
