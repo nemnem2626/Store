@@ -1,16 +1,13 @@
 package com.poly.asm.controller;
 
-import com.poly.asm.daos.OrderDetailRepository;
-import com.poly.asm.daos.OrderRepository;
 import com.poly.asm.daos.ProductImageRepository;
 import com.poly.asm.daos.ProductVariantRepository;
 import com.poly.asm.entitys.Cart;
 import com.poly.asm.entitys.CartItem;
-import com.poly.asm.entitys.Order;
-import com.poly.asm.entitys.OrderDetail;
 import com.poly.asm.entitys.ProductVariant;
 import com.poly.asm.entitys.User;
 import com.poly.asm.services.CartService;
+import com.poly.asm.services.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -39,16 +36,16 @@ public class CartController {
     private CartService cartService;
 
     @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
-
-    @Autowired
     private ProductVariantRepository productVariantRepository;
 
     @Autowired
     private ProductImageRepository productImageRepository;
+
+    @Autowired
+    private VNPAYConfig vnpayConfig;
+
+    @Autowired
+    private OrderService orderService;
 
     @PostConstruct
     public void init() {
@@ -80,7 +77,7 @@ public class CartController {
                 Long variantId = item.getVariant().getId();
                 String imageUrl = productImageRepository.findPrimaryImageByProductId(item.getVariant().getProduct().getId())
                         .map(img -> img.getImageUrl())
-                        .orElse("path/to/placeholder.jpg");
+                        .orElse("/images/no-image.svg");
                 imageUrls.put(variantId, imageUrl);
                 sizes.put(variantId, item.getVariant().getSize() != null ? item.getVariant().getSize() : "N/A");
                 colors.put(variantId, item.getVariant().getColor() != null ? item.getVariant().getColor() : "N/A");
@@ -215,36 +212,36 @@ public class CartController {
                                 @RequestParam String paymentMethod,
                                 HttpServletRequest request,
                                 HttpServletResponse response,
-                                Model model) {
+                                RedirectAttributes redirectAttributes) {
         if (request.getSession().getAttribute("user") == null) {
             return "redirect:/login";
         }
 
         Cart cart = cartService.getCart(request);
         if (cart == null || cart.getCartItems().isEmpty()) {
-            model.addAttribute("error", "Giỏ hàng trống, không thể thanh toán!");
+            redirectAttributes.addFlashAttribute("error", "Giỏ hàng trống, không thể thanh toán!");
             return "redirect:/cart/checkout";
         }
 
         // Kiểm tra tính hợp lệ của dữ liệu
         if (fullname == null || fullname.trim().isEmpty()) {
-            model.addAttribute("error", "Họ và tên không được để trống!");
+            redirectAttributes.addFlashAttribute("error", "Họ và tên không được để trống!");
             return "redirect:/cart/checkout";
         }
         if (!fullname.matches("^[\\p{L}\\s]+$")) {
-            model.addAttribute("error", "Họ và tên chỉ được chứa chữ cái và khoảng trắng!");
+            redirectAttributes.addFlashAttribute("error", "Họ và tên chỉ được chứa chữ cái và khoảng trắng!");
             return "redirect:/cart/checkout";
         }
         if (!phone.matches("^\\d{10}$")) {
-            model.addAttribute("error", "Số điện thoại phải là 10 chữ số!");
+            redirectAttributes.addFlashAttribute("error", "Số điện thoại phải là 10 chữ số!");
             return "redirect:/cart/checkout";
         }
         if (address == null || address.trim().isEmpty()) {
-            model.addAttribute("error", "Địa chỉ không được để trống!");
+            redirectAttributes.addFlashAttribute("error", "Địa chỉ không được để trống!");
             return "redirect:/cart/checkout";
         }
         if (!paymentMethod.equals("COD") && !paymentMethod.equals("VNPAY")) {
-            model.addAttribute("error", "Phương thức thanh toán không hợp lệ!");
+            redirectAttributes.addFlashAttribute("error", "Phương thức thanh toán không hợp lệ!");
             return "redirect:/cart/checkout";
         }
 
@@ -252,7 +249,7 @@ public class CartController {
         for (CartItem item : cart.getCartItems()) {
             ProductVariant variant = item.getVariant();
             if (variant.getStock() < item.getQuantity()) {
-                model.addAttribute("error", "Số lượng sản phẩm '" + variant.getProduct().getName() + "' vượt quá tồn kho (" + variant.getStock() + ")!");
+                redirectAttributes.addFlashAttribute("error", "Số lượng sản phẩm '" + variant.getProduct().getName() + "' vượt quá tồn kho (" + variant.getStock() + ")!");
                 return "redirect:/cart/checkout";
             }
         }
@@ -261,6 +258,11 @@ public class CartController {
         User user = (User) request.getSession().getAttribute("user");
 
         if ("VNPAY".equals(paymentMethod)) {
+            if (!vnpayConfig.isConfigured()) {
+                redirectAttributes.addFlashAttribute("error",
+                        "Thanh toán VNPay chưa được cấu hình. Vui lòng chọn thanh toán khi nhận hàng (COD)!");
+                return "redirect:/cart/checkout";
+            }
             // Lưu thông tin từ form vào session để VNPAYController sử dụng
             request.getSession().setAttribute("order_fullname", fullname);
             request.getSession().setAttribute("order_phone", phone);
@@ -268,39 +270,19 @@ public class CartController {
 
             String vnpayUrl = createVNPayPaymentUrl(request, total, "Thanh toán đơn hàng");
             return "redirect:" + vnpayUrl;
-        } else {
-            Order order = new Order();
-            order.setFullname(fullname);
-            order.setPhone(phone);
-            order.setAddress(address);
-            order.setPaymentMethod(paymentMethod);
-            order.setTotalPrice(cartService.getTotalPrice(cart));
-            order.setUser(user);
-            order.setStatus("PENDING");
+        }
 
-            try {
-                order = orderRepository.save(order);
-
-                for (CartItem cartItem : cart.getCartItems()) {
-                    OrderDetail orderDetail = new OrderDetail();
-                    orderDetail.setOrder(order);
-                    orderDetail.setVariant(cartItem.getVariant());
-                    orderDetail.setQuantity(cartItem.getQuantity());
-                    orderDetail.setPrice(cartItem.getPrice());
-                    orderDetailRepository.save(orderDetail);
-
-                    ProductVariant variant = cartItem.getVariant();
-                    variant.setStock(variant.getStock() - cartItem.getQuantity());
-                    productVariantRepository.save(variant);
-                }
-
-                cartService.clearCart(request);
-                return "redirect:/cart/success";
-            } catch (Exception e) {
-                logger.error("Lỗi khi xử lý đơn hàng COD: {}", e.getMessage(), e);
-                model.addAttribute("error", "Đã xảy ra lỗi khi xử lý đơn hàng. Vui lòng thử lại!");
-                return "redirect:/cart/checkout";
-            }
+        try {
+            orderService.placeOrder(cart, user, fullname, phone, address, paymentMethod, total);
+            cartService.clearCart(request);
+            return "redirect:/cart/success";
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/cart/checkout";
+        } catch (Exception e) {
+            logger.error("Lỗi khi xử lý đơn hàng COD: {}", e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("error", "Đã xảy ra lỗi khi xử lý đơn hàng. Vui lòng thử lại!");
+            return "redirect:/cart/checkout";
         }
     }
 
@@ -308,14 +290,14 @@ public class CartController {
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", VNPAYConfig.VNP_VERSION);
         vnp_Params.put("vnp_Command", VNPAYConfig.VNP_COMMAND);
-        vnp_Params.put("vnp_TmnCode", VNPAYConfig.VNP_TMN_CODE);
+        vnp_Params.put("vnp_TmnCode", vnpayConfig.getTmnCode());
         vnp_Params.put("vnp_Amount", String.valueOf((long) (amount * 100)));
         vnp_Params.put("vnp_CurrCode", VNPAYConfig.VNP_CURR_CODE);
         vnp_Params.put("vnp_TxnRef", String.valueOf(System.currentTimeMillis()));
         vnp_Params.put("vnp_OrderInfo", orderInfo);
         vnp_Params.put("vnp_OrderType", "other");
         vnp_Params.put("vnp_Locale", VNPAYConfig.DEFAULT_LOCALE);
-        vnp_Params.put("vnp_ReturnUrl", VNPAYConfig.VNP_RETURN_URL);
+        vnp_Params.put("vnp_ReturnUrl", vnpayConfig.getReturnUrl());
         vnp_Params.put("vnp_IpAddr", getIpAddress(request));
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -342,14 +324,10 @@ public class CartController {
             }
         }
 
-        logger.info("Tạo HashData: {}", hashData.toString());
-        String vnp_SecureHash = hmacSHA512(VNPAYConfig.VNP_HASH_SECRET, hashData.toString());
-        logger.info("Tạo vnp_SecureHash: {}", vnp_SecureHash);
-
+        String vnp_SecureHash = hmacSHA512(vnpayConfig.getHashSecret(), hashData.toString());
         query.append("&vnp_SecureHash=").append(vnp_SecureHash);
-        String paymentUrl = VNPAYConfig.VNP_PAY_URL + "?" + query;
-        logger.info("URL thanh toán: {}", paymentUrl);
-        return paymentUrl;
+        logger.info("Tạo URL thanh toán VNPay cho mã giao dịch {}", vnp_Params.get("vnp_TxnRef"));
+        return vnpayConfig.getPayUrl() + "?" + query;
     }
 
     private String hmacSHA512(String key, String data) {

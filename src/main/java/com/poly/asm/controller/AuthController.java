@@ -105,7 +105,7 @@ public class AuthController {
             user.setUsername(username);
             user.setPassword(passwordEncoder.encode(password));
             user.setEmail(email);
-            user.setFullname(fullName != null && !fullName.isEmpty() ? fullName : "Unknown");
+            user.setFullname(fullName != null && !fullName.isBlank() ? fullName.trim() : username);
             user.setPhone(phone != null && !phone.isEmpty() && phone.length() <= 10 ? phone : null);
             user.setAddress(address);
             user.setRole("USER");

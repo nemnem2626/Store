@@ -73,7 +73,7 @@
                                 <tr th:each="item : ${order.orderDetails}" class="text-center">
                                     <td th:text="${item?.variant?.product?.name} ?: 'Không có tên'" class="fw-medium"></td>
                                     <td>
-                                        <img th:src="${#lists.size(item?.variant?.product?.images) > 0 ? item?.variant?.product?.images[0]?.imageUrl : '/images/default.jpg'}" alt="Ảnh sản phẩm"
+                                        <img th:src="${#lists.size(item?.variant?.product?.images) > 0 ? item?.variant?.product?.images[0]?.imageUrl : '/images/no-image.svg'}" alt="Ảnh sản phẩm"
                                              class="img-fluid rounded" style="width: 60px; height: 60px; object-fit: cover;">
                                     </td>
                                     <td th:text="${item?.variant?.size} ?: 'Chưa xác định'"></td>

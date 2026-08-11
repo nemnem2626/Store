@@ -1,18 +1,46 @@
 package com.poly.asm.controller;
 
-public class VNPAYConfig {
-    // SANDBOX
-    public static final String VNP_PAY_URL   = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static final String VNP_TMN_CODE  = "NQ407ZXU";
-    public static final String VNP_HASH_SECRET = "JM6M1WKHPZX40X7I0OAX8NM9ECUBDQ9T"; 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-    // URL của bạn nhận kết quả
-    public static final String VNP_RETURN_URL = "http://localhost:8080/vnpay-return";
+@Component
+public class VNPAYConfig {
 
     public static final String VNP_VERSION = "2.1.0";
     public static final String VNP_COMMAND = "pay";
     public static final String VNP_CURR_CODE = "VND";
     public static final String DEFAULT_LOCALE = "vn";
 
-    private VNPAYConfig() {}
+    @Value("${vnpay.payment-url}")
+    private String payUrl;
+
+    @Value("${vnpay.tmn-code}")
+    private String tmnCode;
+
+    @Value("${vnpay.hash-secret}")
+    private String hashSecret;
+
+    @Value("${vnpay.return-url}")
+    private String returnUrl;
+
+    public String getPayUrl() {
+        return payUrl;
+    }
+
+    public String getTmnCode() {
+        return tmnCode;
+    }
+
+    public String getHashSecret() {
+        return hashSecret;
+    }
+
+    public String getReturnUrl() {
+        return returnUrl;
+    }
+
+    public boolean isConfigured() {
+        return tmnCode != null && !tmnCode.isBlank() && !"disabled".equals(tmnCode)
+                && hashSecret != null && !hashSecret.isBlank() && !"disabled".equals(hashSecret);
+    }
 }

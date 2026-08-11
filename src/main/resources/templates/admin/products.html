@@ -148,14 +148,11 @@
                 >
                   <label for="currentImages">Ảnh hiện tại:</label>
                   <div class="row">
-                    <div
-                      th:each="imgUrl : ${imageUrls[product.id]}"
-                      class="col-md-2"
-                    >
+                    <div class="col-md-2">
                       <img
-                        th:src="'/uploads/' + ${imgUrl}"
+                        th:src="${imageUrls[product.id]}"
                         class="img-thumbnail"
-                        style="width: 100px; height: 100px"
+                        style="width: 100px; height: 100px; object-fit: cover"
                       />
                     </div>
                   </div>
@@ -196,9 +193,9 @@
                     <td th:text="${firstProduct.name}"></td>
                     <td>
                       <img
-                        th:src="'/uploads/' + ${imageUrls[firstProduct.id]}"
+                        th:src="${imageUrls[firstProduct.id]}"
                         class="img-thumbnail"
-                        style="width: 50px; height: 50px"
+                        style="width: 50px; height: 50px; object-fit: cover"
                       />
                     </td>
                     <td>

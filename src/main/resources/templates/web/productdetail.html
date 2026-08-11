@@ -36,7 +36,7 @@
             <!-- Hình ảnh sản phẩm -->
             <div class="col-md-6">
                 <div class="product-detail">
-                    <img th:src="${images != null and !images.isEmpty() ? images[0].imageUrl : '/path/to/placeholder.jpg'}"
+                    <img th:src="${images != null and !images.isEmpty() ? images[0].imageUrl : '/images/no-image.svg'}"
                          alt="Product Image" class="img-fluid rounded" id="mainImage">
                 </div>
 
