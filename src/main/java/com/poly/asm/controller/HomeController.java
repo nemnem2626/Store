@@ -66,7 +66,7 @@ public class HomeController {
                         Product::getId,
                         p -> productImageRepository.findPrimaryImageByProductId(p.getId())
                                 .map(ProductImage::getImageUrl)
-                                .orElse("/path/to/product.jpg"),
+                                .orElse("/images/no-image.svg"),
                         (existing, newValue) -> existing
                 ));
 

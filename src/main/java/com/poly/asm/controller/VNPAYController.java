@@ -1,28 +1,22 @@
 package com.poly.asm.controller;
 
-import com.poly.asm.daos.OrderDetailRepository;
-import com.poly.asm.daos.OrderRepository;
-import com.poly.asm.daos.ProductVariantRepository;
 import com.poly.asm.entitys.Cart;
 import com.poly.asm.entitys.CartItem;
-import com.poly.asm.entitys.Order;
-import com.poly.asm.entitys.OrderDetail;
 import com.poly.asm.entitys.ProductVariant;
 import com.poly.asm.entitys.User;
 import com.poly.asm.services.CartService;
+import com.poly.asm.services.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.crypto.Mac;
@@ -37,16 +31,13 @@ public class VNPAYController {
     private CartService cartService;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private VNPAYConfig vnpayConfig;
 
     @Autowired
-    private OrderDetailRepository orderDetailRepository;
-
-    @Autowired
-    private ProductVariantRepository productVariantRepository;
+    private OrderService orderService;
 
     @GetMapping("/vnpay-return")
-    public String handleVNPayReturn(HttpServletRequest request, Model model, HttpServletResponse response) {
+    public String handleVNPayReturn(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         logger.info("Nhận yêu cầu đến /vnpay-return");
         logger.info("Chuỗi truy vấn: {}", request.getQueryString());
 
@@ -80,9 +71,7 @@ public class VNPAYController {
             }
         }
 
-        logger.info("HashData trả về: {}", hashData.toString());
-        String serverHash = hmacSHA512(VNPAYConfig.VNP_HASH_SECRET, hashData.toString());
-        logger.info("ServerHash: {}, VNP_SecureHash: {}", serverHash, vnp_SecureHash);
+        String serverHash = hmacSHA512(vnpayConfig.getHashSecret(), hashData.toString());
 
         if (serverHash.equalsIgnoreCase(vnp_SecureHash)) {
             String vnp_ResponseCode = vnpParams.get("vnp_ResponseCode");
@@ -91,7 +80,7 @@ public class VNPAYController {
                 User user = (User) request.getSession().getAttribute("user");
                 if (user == null) {
                     logger.error("Phiên đăng nhập không hợp lệ");
-                    model.addAttribute("error", "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại!");
+                    redirectAttributes.addFlashAttribute("error", "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại!");
                     return "redirect:/login";
                 }
 
@@ -99,7 +88,7 @@ public class VNPAYController {
                 String phone = (String) request.getSession().getAttribute("order_phone");
                 if (phone == null || !phone.matches("^\\d{10}$")) {
                     logger.error("Số điện thoại không hợp lệ: {}", phone);
-                    model.addAttribute("error", "Số điện thoại không hợp lệ. Vui lòng cập nhật thông tin thanh toán!");
+                    redirectAttributes.addFlashAttribute("error", "Số điện thoại không hợp lệ. Vui lòng cập nhật thông tin thanh toán!");
                     return "redirect:/cart/checkout";
                 }
 
@@ -107,14 +96,14 @@ public class VNPAYController {
                 String address = (String) request.getSession().getAttribute("order_address");
                 if (address == null || address.trim().isEmpty()) {
                     logger.error("Địa chỉ không hợp lệ: {}", address);
-                    model.addAttribute("error", "Địa chỉ không hợp lệ. Vui lòng cập nhật thông tin thanh toán!");
+                    redirectAttributes.addFlashAttribute("error", "Địa chỉ không hợp lệ. Vui lòng cập nhật thông tin thanh toán!");
                     return "redirect:/cart/checkout";
                 }
 
                 Cart cart = cartService.getCart(request);
                 if (cart == null || cart.getCartItems().isEmpty()) {
                     logger.error("Giỏ hàng trống hoặc không hợp lệ");
-                    model.addAttribute("error", "Giỏ hàng trống hoặc không hợp lệ!");
+                    redirectAttributes.addFlashAttribute("error", "Giỏ hàng trống hoặc không hợp lệ!");
                     return "redirect:/cart/checkout";
                 }
 
@@ -125,34 +114,16 @@ public class VNPAYController {
                                 variant != null ? variant.getId() : "null",
                                 variant != null ? variant.getStock() : 0,
                                 cartItem.getQuantity());
-                        model.addAttribute("error", "Sản phẩm không hợp lệ hoặc đã hết hàng!");
+                        redirectAttributes.addFlashAttribute("error", "Sản phẩm không hợp lệ hoặc đã hết hàng!");
                         return "redirect:/cart/checkout";
                     }
                 }
 
-                Order order = new Order();
-                order.setFullname((String) request.getSession().getAttribute("order_fullname"));
-                order.setPhone(phone);
-                order.setAddress(address);
-                order.setPaymentMethod("VNPAY");
-                order.setTotalPrice(cartService.getTotalPrice(cart));
-                order.setUser(user);
-                order.setStatus("PENDING");
+                String fullname = (String) request.getSession().getAttribute("order_fullname");
 
                 try {
-                    order = orderRepository.save(order);
-                    for (CartItem cartItem : cart.getCartItems()) {
-                        OrderDetail orderDetail = new OrderDetail();
-                        orderDetail.setOrder(order);
-                        orderDetail.setVariant(cartItem.getVariant());
-                        orderDetail.setQuantity(cartItem.getQuantity());
-                        orderDetail.setPrice(cartItem.getPrice());
-                        orderDetailRepository.save(orderDetail);
-
-                        ProductVariant variant = cartItem.getVariant();
-                        variant.setStock(variant.getStock() - cartItem.getQuantity());
-                        productVariantRepository.save(variant);
-                    }
+                    orderService.placeOrder(cart, user, fullname, phone, address, "VNPAY",
+                            cartService.getTotalPrice(cart));
                     cartService.clearCart(request);
                     // Xóa thông tin thanh toán khỏi session
                     request.getSession().removeAttribute("order_fullname");
@@ -161,68 +132,22 @@ public class VNPAYController {
                     logger.info("Lưu đơn hàng thành công. Chuyển hướng đến /cart/success");
                     return "redirect:/cart/success";
                 } catch (Exception e) {
-                    logger.error("Lỗi khi lưu đơn hàng: {}", e.getMessage(), e);
-                    model.addAttribute("error", "Lỗi khi lưu đơn hàng: " + e.getMessage());
+                    logger.error("Lỗi khi lưu đơn hàng VNPay: {}", e.getMessage(), e);
+                    redirectAttributes.addFlashAttribute("error",
+                            "Thanh toán thành công nhưng không lưu được đơn hàng. Vui lòng liên hệ cửa hàng!");
                     return "redirect:/cart/checkout";
                 }
             } else {
                 String errorMessage = getVNPayErrorMessage(vnp_ResponseCode);
                 logger.error("Lỗi thanh toán VNPay: {}", errorMessage);
-                model.addAttribute("error", errorMessage);
+                redirectAttributes.addFlashAttribute("error", errorMessage);
                 return "redirect:/cart/checkout";
             }
         } else {
-            logger.error("Sai chữ ký! ServerHash={}, VNP_SecureHash={}", serverHash, vnp_SecureHash);
-            model.addAttribute("error", "Sai chữ ký! Vui lòng thử lại.");
+            logger.error("Chữ ký VNPay không hợp lệ cho giao dịch {}", vnpParams.get("vnp_TxnRef"));
+            redirectAttributes.addFlashAttribute("error", "Sai chữ ký! Vui lòng thử lại.");
             return "redirect:/cart/checkout";
         }
-    }
-
-    @GetMapping("/test-vnpay")
-    public String testVNPay(HttpServletRequest request) {
-        Map<String, String> vnp_Params = new HashMap<>();
-        vnp_Params.put("vnp_Version", VNPAYConfig.VNP_VERSION);
-        vnp_Params.put("vnp_Command", VNPAYConfig.VNP_COMMAND);
-        vnp_Params.put("vnp_TmnCode", VNPAYConfig.VNP_TMN_CODE);
-        vnp_Params.put("vnp_Amount", "1000000"); // 10,000 VND
-        vnp_Params.put("vnp_CurrCode", VNPAYConfig.VNP_CURR_CODE);
-        vnp_Params.put("vnp_TxnRef", "TEST" + System.currentTimeMillis());
-        vnp_Params.put("vnp_OrderInfo", "Test payment");
-        vnp_Params.put("vnp_OrderType", "other");
-        vnp_Params.put("vnp_Locale", VNPAYConfig.DEFAULT_LOCALE);
-        vnp_Params.put("vnp_ReturnUrl", VNPAYConfig.VNP_RETURN_URL);
-        vnp_Params.put("vnp_IpAddr", getIpAddress(request));
-
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        String vnp_CreateDate = formatter.format(new Date());
-        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-
-        List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
-        Collections.sort(fieldNames);
-
-        StringBuilder hashData = new StringBuilder();
-        StringBuilder query = new StringBuilder();
-        for (int i = 0; i < fieldNames.size(); i++) {
-            String fieldName = fieldNames.get(i);
-            String fieldValue = vnp_Params.get(fieldName);
-            if (fieldValue != null && !fieldValue.isEmpty()) {
-                hashData.append(fieldName).append('=').append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
-                query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8))
-                     .append('=')
-                     .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
-                if (i < fieldNames.size() - 1) {
-                    hashData.append('&');
-                    query.append('&');
-                }
-            }
-        }
-
-        String vnp_SecureHash = hmacSHA512(VNPAYConfig.VNP_HASH_SECRET, hashData.toString());
-        query.append("&vnp_SecureHash=").append(vnp_SecureHash);
-
-        String paymentUrl = VNPAYConfig.VNP_PAY_URL + "?" + query;
-        logger.info("URL thanh toán thử: {}", paymentUrl);
-        return "redirect:" + paymentUrl;
     }
 
     private String getVNPayErrorMessage(String responseCode) {
@@ -255,11 +180,4 @@ public class VNPAYController {
         }
     }
 
-    private String getIpAddress(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");
-        if (ipAddress == null) {
-            ipAddress = request.getRemoteAddr();
-        }
-        return ipAddress;
-    }
 }

@@ -139,7 +139,7 @@ public class AdminController {
                         .stream().filter(img -> img.getImageUrl() != null && !img.getImageUrl().isEmpty())
                         .findFirst()
                         .map(ProductImage::getImageUrl)
-                        .orElse("/images/default.jpg");
+                        .orElse("/images/no-image.svg");
                 imageUrls.put(p.getId(), imageUrl);
                 logger.debug("Assigned image URL {} for product ID: {}", imageUrl, p.getId());
             }
@@ -225,7 +225,7 @@ public class AdminController {
                 .stream().filter(img -> img.getImageUrl() != null && !img.getImageUrl().isEmpty())
                 .findFirst()
                 .map(ProductImage::getImageUrl)
-                .orElse("/images/default.jpg");
+                .orElse("/images/no-image.svg");
         imageUrls.put(product.getId(), imageUrl);
 
         model.addAttribute("product", product);
