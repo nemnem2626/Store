@@ -12,25 +12,36 @@
     <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
     <link rel="stylesheet" th:href="@{/css/checkout.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
+<!-- Theme dùng chung -->
+<link rel="stylesheet" th:href="@{/css/theme.css}" />
 </head>
 <body>
 <!-- Header -->
 <div th:replace="~{fragments/header :: siteHeader}"></div>
 
-<div class="checkout-container pb-2 pt-2">
+<section class="st-page-hero">
     <div class="container">
-        <h2 class="mb-4 text-center text-dark">Thông tin đặt hàng</h2>
+        <nav class="st-breadcrumb">
+            <a th:href="@{/home}">Trang chủ</a> <span>/</span>
+            <a th:href="@{/cart}">Giỏ hàng</a> <span>/</span> <span>Thanh toán</span>
+        </nav>
+        <h1>Thanh toán đơn hàng</h1>
+        <p>Hoàn tất thông tin nhận hàng, chúng tôi sẽ giao trong 2 giờ nội thành.</p>
+    </div>
+</section>
 
-        <div th:if="${error}" class="alert alert-danger text-center" role="alert" th:text="${error}"></div>
+<div class="checkout-container pb-2 pt-4">
+    <div class="container">
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
 
+      <div class="row g-4">
+        <div class="col-lg-7">
         <!-- Sản phẩm trong giỏ hàng -->
-        <div class="card shadow mb-4">
-            <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">Sản phẩm trong giỏ hàng</h5>
-            </div>
-            <div class="card-body">
+        <div class="st-panel mb-4">
+            <h5 class="st-panel-title"><i class="bi bi-bag-check me-2"></i>Sản phẩm trong giỏ hàng</h5>
+            <div>
                 <div class="table-responsive">
-                    <table class="table table-bordered text-center align-middle">
+                    <table class="table align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>Tên sản phẩm</th>
@@ -56,21 +67,14 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div class="text-end">
-                    <label class="fw-bold me-2">Tổng tiền:</label>
-                    <span th:text="${#numbers.formatInteger(cartTotal, 0, 'COMMA') + ' VNĐ'}" class="fw-bold text-danger"></span>
-                </div>
             </div>
         </div>
 
         <!-- Thông tin người nhận -->
-        <form th:action="@{/cart/process-payment}" method="post" class="needs-validation" novalidate onsubmit="return validateCheckoutForm(event)">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Thông tin người nhận</h5>
-                </div>
-                <div class="card-body row g-3">
+        <form th:action="@{/cart/process-payment}" method="post" class="needs-validation" novalidate onsubmit="return validateCheckoutForm(event)" id="checkoutForm">
+            <div class="st-panel">
+                <h5 class="st-panel-title"><i class="bi bi-person-lines-fill me-2"></i>Thông tin người nhận</h5>
+                <div class="row g-3">
                     <div class="col-md-6">
                         <label for="fullname" class="form-label">Họ và tên:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="fullname" name="fullname" th:value="${user?.fullname ?: ''}" required>
@@ -97,11 +101,39 @@
                     </div>
                 </div>
             </div>
-
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-success btn-lg px-5 shadow">Xác nhận đặt hàng</button>
-            </div>
         </form>
+        </div>
+
+        <!-- Tóm tắt đơn hàng -->
+        <div class="col-lg-5">
+            <div class="st-panel" style="position: sticky; top: 100px">
+                <h5 class="st-panel-title"><i class="bi bi-receipt me-2"></i>Tóm tắt đơn hàng</h5>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="st-muted">Tạm tính</span>
+                    <span th:text="${#numbers.formatInteger(cartTotal, 0, 'COMMA') + ' ₫'}"></span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="st-muted">Phí vận chuyển</span>
+                    <span class="text-success">Miễn phí</span>
+                </div>
+                <hr class="st-divider">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <strong>Tổng thanh toán</strong>
+                    <span class="fs-4 fw-bold text-danger"
+                          th:text="${#numbers.formatInteger(cartTotal, 0, 'COMMA') + ' ₫'}"></span>
+                </div>
+                <button type="submit" form="checkoutForm" class="btn btn-st-accent btn-lg w-100">
+                    Xác nhận đặt hàng
+                </button>
+                <div class="d-flex align-items-center gap-2 mt-3 st-muted small">
+                    <i class="bi bi-shield-lock"></i> Thông tin thanh toán được bảo mật
+                </div>
+                <div class="d-flex align-items-center gap-2 st-muted small">
+                    <i class="bi bi-arrow-counterclockwise"></i> Đổi trả miễn phí trong 7 ngày
+                </div>
+            </div>
+        </div>
+      </div>
     </div>
 </div>
 

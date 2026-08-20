@@ -23,7 +23,9 @@
     <link rel="stylesheet" th:href="@{/css/carousel.css}" />
     <link rel="stylesheet" th:href="@{/css/header.css}" />
     <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}" />
-  </head>
+  <!-- Theme dùng chung -->
+<link rel="stylesheet" th:href="@{/css/theme.css}" />
+</head>
   <body>
     <!-- Header -->
     <div th:replace="fragments/header :: siteHeader"></div>
@@ -74,7 +76,7 @@
                 data-target="#js-header"
               >
                 <h1 class="slideshow__slide-caption-title">
-                  Sản phẩm mới nhất
+                  Điện thoại mới nhất 2026
                 </h1>
                 <a
                   class="slideshow__slide-caption-subtitle -load o-hsub -link"
@@ -83,7 +85,7 @@
                   <span
                     class="slideshow__slide-caption-subtitle-label"
                     style="color: white"
-                    >Khám phá bộ sưu tập mới nhất</span
+                    >iPhone · Samsung · Xiaomi · OPPO chính hãng, trả góp 0%</span
                   >
                 </a>
               </div>
@@ -133,16 +135,17 @@
                 data-target="#js-header"
               >
                 <h1 class="slideshow__slide-caption-title">
-                  Phong cách hiện đại
+                  Bảo hành 1 đổi 1 trong 12 tháng
                 </h1>
                 <a
                   class="slideshow__slide-caption-subtitle -load o-hsub -link"
-                  th:href="@{/product}"
+                  th:href="@{/policy}"
                 >
                   <span
                     class="slideshow__slide-caption-subtitle-label"
                     style="color: white"
-                  ></span>
+                    >Xem chính sách đổi trả &amp; bảo hành của STORE</span
+                  >
                 </a>
               </div>
             </div>
@@ -190,7 +193,9 @@
                 data-position="top"
                 data-target="#js-header"
               >
-                <h1 class="slideshow__slide-caption-title"></h1>
+                <h1 class="slideshow__slide-caption-title">
+                  Ưu đãi phụ kiện đến 50%
+                </h1>
                 <a
                   class="slideshow__slide-caption-subtitle -load o-hsub -link"
                   th:href="@{/product}"
@@ -198,7 +203,8 @@
                   <span
                     class="slideshow__slide-caption-subtitle-label"
                     style="color: white"
-                  ></span>
+                    >Mua máy kèm phụ kiện – giảm ngay hôm nay</span
+                  >
                 </a>
               </div>
             </div>
@@ -266,39 +272,203 @@
       </section>
     </div>
 
-    <!-- Slideshow sản phẩm mới -->
-    <div class="container my-5">
-      <h3 class="mb-4">Sản phẩm mới & hot</h3>
-      <div class="linear-carousel">
-        <div class="carousel-track" id="carouselTrack">
-          <div th:each="product : ${newProducts}" class="product-card">
-            <a
-              th:href="@{/product/detail/{id}(id=${product.id})}"
-              class="text-decoration-none text-dark"
-            >
-              <img
-                th:src="${imageUrls[product.id]}"
-                class="card-img-top"
-                th:alt="${product.name}"
-              />
-              <div class="product-info">
-                <h6 class="card-title" th:text="${product.name}">Sản phẩm</h6>
-                <p>
-                  <span th:if="${formattedPrices[product.id] == '0'}">
-                    <strong class="text-warning">Sắp ra mắt</strong>
-                  </span>
-                  <span th:unless="${formattedPrices[product.id] == '0'}">
-                    <strong
-                      th:text="'₫' + ${formattedPrices[product.id]}"
-                    ></strong>
-                  </span>
-                </p>
-              </div>
-            </a>
+    <!-- Cam kết dịch vụ -->
+    <div class="container" style="margin-top: -2.5rem; position: relative; z-index: 3">
+      <div class="st-usp">
+        <div class="st-usp-item">
+          <span class="st-usp-icon"><i class="bi bi-patch-check"></i></span>
+          <div>
+            <strong>100% chính hãng</strong>
+            <small>Nguyên seal, đầy đủ VAT</small>
+          </div>
+        </div>
+        <div class="st-usp-item">
+          <span class="st-usp-icon"><i class="bi bi-arrow-repeat"></i></span>
+          <div>
+            <strong>Bảo hành 1 đổi 1</strong>
+            <small>Trong 12 tháng đầu tiên</small>
+          </div>
+        </div>
+        <div class="st-usp-item">
+          <span class="st-usp-icon"><i class="bi bi-truck"></i></span>
+          <div>
+            <strong>Giao nhanh 2 giờ</strong>
+            <small>Nội thành TP.HCM &amp; Hà Nội</small>
+          </div>
+        </div>
+        <div class="st-usp-item">
+          <span class="st-usp-icon"><i class="bi bi-credit-card-2-front"></i></span>
+          <div>
+            <strong>Trả góp 0%</strong>
+            <small>Duyệt nhanh trong 15 phút</small>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Danh mục -->
+    <section class="st-section pb-0" th:if="${categories != null and !categories.isEmpty()}">
+      <div class="container">
+        <div class="st-section-head">
+          <div>
+            <span class="st-eyebrow"><i class="bi bi-grid"></i> Danh mục</span>
+            <h2 class="st-section-title">Mua sắm theo thương hiệu</h2>
+            <p class="st-section-sub">
+              Chọn nhanh dòng máy bạn quan tâm, giá đã bao gồm VAT.
+            </p>
+          </div>
+          <a class="btn btn-st-ghost d-none d-md-inline-flex" th:href="@{/product}"
+            >Xem tất cả <i class="bi bi-arrow-right ms-1"></i
+          ></a>
+        </div>
+        <div class="row g-3">
+          <div class="col-6 col-lg-3" th:each="category : ${categories}">
+            <a
+              class="st-cat-card"
+              th:href="@{/product/category/{id}(id=${category.id})}"
+            >
+              <span th:text="${category.name}">Danh mục</span>
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sản phẩm mới & hot -->
+    <section class="st-section">
+      <div class="container">
+        <div class="st-section-head">
+          <div>
+            <span class="st-eyebrow"><i class="bi bi-fire"></i> Mới &amp; hot</span>
+            <h2 class="st-section-title">Sản phẩm bán chạy</h2>
+            <p class="st-section-sub">
+              Những mẫu điện thoại được khách hàng STORE chọn nhiều nhất tháng
+              này.
+            </p>
+          </div>
+          <a class="btn btn-st-ghost d-none d-md-inline-flex" th:href="@{/product}"
+            >Tất cả sản phẩm <i class="bi bi-arrow-right ms-1"></i
+          ></a>
+        </div>
+
+        <div class="row g-3 g-lg-4">
+          <div
+            class="col-6 col-lg-3"
+            th:each="product, iter : ${newProducts}"
+            th:if="${iter.index < 8}"
+          >
+            <div class="st-product-card">
+              <span class="st-badge" th:if="${iter.index < 2}">Mới</span>
+              <a
+                class="st-product-media"
+                th:href="@{/product/detail/{id}(id=${product.id})}"
+              >
+                <img
+                  th:src="${imageUrls[product.id]}"
+                  th:alt="${product.name}"
+                  loading="lazy"
+                />
+              </a>
+              <div class="st-product-body">
+                <span
+                  class="st-product-cat"
+                  th:text="${product.category != null ? product.category.name : 'Điện thoại'}"
+                ></span>
+                <a
+                  th:href="@{/product/detail/{id}(id=${product.id})}"
+                  class="st-product-name"
+                  th:text="${product.name}"
+                  >Sản phẩm</a
+                >
+                <div class="st-rating">
+                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+                  ><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+                  ><i class="bi bi-star-half"></i>
+                  <span class="ms-1">4.8</span>
+                </div>
+                <p
+                  class="st-product-price -soon"
+                  th:if="${formattedPrices[product.id] == '0'}"
+                >
+                  Sắp ra mắt
+                </p>
+                <p
+                  class="st-product-price"
+                  th:unless="${formattedPrices[product.id] == '0'}"
+                  th:text="${formattedPrices[product.id]} + '₫'"
+                ></p>
+                <div class="st-product-foot">
+                  <a
+                    class="btn btn-st-primary"
+                    th:href="@{/product/detail/{id}(id=${product.id})}"
+                    >Xem chi tiết</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-4 d-md-none">
+          <a class="btn btn-st-ghost" th:href="@{/product}">Tất cả sản phẩm</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Banner ưu đãi -->
+    <section class="pb-5">
+      <div class="container">
+        <div class="st-promo">
+          <div class="row align-items-center g-4">
+            <div class="col-lg-7 position-relative">
+              <span class="st-eyebrow text-white-50"
+                ><i class="bi bi-gift"></i> Ưu đãi tháng này</span
+              >
+              <h3>Thu cũ đổi mới – trợ giá đến 3.000.000₫</h3>
+              <p>
+                Mang máy cũ đến STORE để được định giá miễn phí và nâng cấp lên
+                điện thoại mới với chi phí thấp nhất.
+              </p>
+              <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-st-accent" th:href="@{/product}">Mua ngay</a>
+                <a class="btn btn-st-ghost" th:href="@{/introduction}"
+                  >Tìm hiểu thêm</a
+                >
+              </div>
+            </div>
+            <div class="col-lg-5 position-relative">
+              <div class="row g-3 text-center">
+                <div class="col-6">
+                  <div class="p-3 rounded-4" style="background: rgba(255,255,255,.08)">
+                    <div class="fs-3 fw-bold">7 ngày</div>
+                    <small class="text-white-50">Đổi trả miễn phí</small>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 rounded-4" style="background: rgba(255,255,255,.08)">
+                    <div class="fs-3 fw-bold">12 tháng</div>
+                    <small class="text-white-50">Bảo hành 1 đổi 1</small>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 rounded-4" style="background: rgba(255,255,255,.08)">
+                    <div class="fs-3 fw-bold">0%</div>
+                    <small class="text-white-50">Lãi suất trả góp</small>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 rounded-4" style="background: rgba(255,255,255,.08)">
+                    <div class="fs-3 fw-bold">2 giờ</div>
+                    <small class="text-white-50">Giao hàng nội thành</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Back to Top Button -->
     <button id="backToTop" title="Lên đầu trang">↑</button>

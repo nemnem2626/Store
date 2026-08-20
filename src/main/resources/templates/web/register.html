@@ -12,17 +12,23 @@
     <link rel="stylesheet" th:href="@{/css/register.css}">
     <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
+<!-- Theme dùng chung -->
+<link rel="stylesheet" th:href="@{/css/theme.css}" />
 </head>
 <body>
 <!-- Header -->
 <div th:replace="fragments/header :: siteHeader"></div>
 
 <div class="container my-5">
-    <h2 class="text-center mb-4" style="font-family: 'Arial', sans-serif; font-weight: 700;">Đăng Ký</h2>
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
+        <div class="col-md-7 col-lg-6">
+            <div class="st-panel p-4 p-lg-5">
+                <div>
+                    <div class="text-center mb-4">
+                        <span class="st-eyebrow"><i class="bi bi-person-plus"></i> Thành viên mới</span>
+                        <h2 class="mb-1">Tạo tài khoản</h2>
+                        <p class="st-muted mb-0">Nhận ưu đãi riêng và theo dõi đơn hàng dễ dàng.</p>
+                    </div>
                     <div th:if="${message}" class="alert" th:class="${message.startsWith('Đăng ký thành công') ? 'alert-success' : 'alert-danger'}">
                         <span th:text="${message}"></span>
                     </div>
@@ -50,10 +56,10 @@
                             <input type="password" class="form-control" id="password" name="password" required>
                             <small id="passwordError" class="text-danger" style="display: none;"></small>
                         </div>                    
-                        <button type="submit" class="btn btn-dark w-100">Đăng Ký</button>
+                        <button type="submit" class="btn btn-st-primary w-100">Đăng ký</button>
                     </form>
                     <div class="text-center mt-3">
-                        <p>Đã có tài khoản? <a href="/login" class="text-dark">Đăng nhập ngay</a></p>
+                        <p>Đã có tài khoản? <a href="/login" class="fw-semibold text-danger">Đăng nhập ngay</a></p>
                     </div>
                 </div>
             </div>
@@ -116,4 +122,5 @@
         return true;
     }
 </script>
+</body>
 </html>

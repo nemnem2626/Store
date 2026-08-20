@@ -12,17 +12,23 @@
     <link rel="stylesheet" th:href="@{/css/login.css}">
       <link rel="stylesheet" th:href="@{/css/footer-chatbox-backtotop.css}">
       <link rel="stylesheet" th:href="@{/css/header.css}">
+<!-- Theme dùng chung -->
+<link rel="stylesheet" th:href="@{/css/theme.css}" />
 </head>
 <body>
 <!-- Header -->
   <div th:replace="fragments/header :: siteHeader"></div>
 
     <div class="container my-5">
-        <h2 class="text-center mb-4" style="font-family: 'Arial', sans-serif; font-weight: 700;">Đăng Nhập</h2>
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
+            <div class="col-md-6 col-lg-5">
+                <div class="st-panel p-4 p-lg-5">
+                    <div>
+                        <div class="text-center mb-4">
+                            <span class="st-eyebrow"><i class="bi bi-shield-lock"></i> Tài khoản STORE</span>
+                            <h2 class="mb-1">Đăng nhập</h2>
+                            <p class="st-muted mb-0">Mua sắm nhanh hơn và theo dõi đơn hàng của bạn.</p>
+                        </div>
                         <div th:if="${message}" class="alert alert-danger" th:text="${message}"></div>
 
                         <form th:action="@{/perform_login}" method="POST">
@@ -35,11 +41,11 @@
                                 <input type="password" class="form-control" id="password" name="password" required placeholder="Nhập mật khẩu">
                                 <i class="bi bi-eye password-toggle" id="togglePassword"></i>
                             </div>
-                            <button type="submit" class="btn btn-dark w-100">Đăng Nhập</button>
+                            <button type="submit" class="btn btn-st-primary w-100">Đăng nhập</button>
                         </form>
 
                         <div class="text-center mt-3">
-                            <p>Hoặc đăng nhập bằng:</p>
+                            <p class="st-muted">Hoặc đăng nhập bằng:</p>
                             <div class="d-flex gap-2 justify-content-center">
                                 <a th:href="@{/oauth2/authorization/google}" class="btn btn-google w-100">
                                     <i class="fab fa-google me-2"></i> Google
@@ -51,7 +57,7 @@
                         </div>
                         <div class="text-center mt-3">
                             <p>
-                                Bạn chưa có tài khoản? <a href="/register" class="text-dark">Đăng ký ngay</a>
+                                Bạn chưa có tài khoản? <a href="/register" class="fw-semibold text-danger">Đăng ký ngay</a>
                             </p>
                         </div>
                     </div>

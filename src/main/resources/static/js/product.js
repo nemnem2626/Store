@@ -5,8 +5,9 @@ export function initProductSort() {
             e.preventDefault();
             const sortOrder = this.dataset.sort;
 
-            const container = document.querySelector('.row.justify-content-center');
-            const items = Array.from(container.querySelectorAll('.col-md-4.mb-4'));
+            const container = document.querySelector('.product-grid');
+            if (!container) return;
+            const items = Array.from(container.querySelectorAll('.product-grid-item'));
 
             items.sort((a, b) => {
                 const priceTextA = a.querySelector('.new-price')?.innerText || '';
