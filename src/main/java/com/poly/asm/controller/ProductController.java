@@ -74,7 +74,7 @@ public class ProductController {
         Map<Long, String> imageUrls = products.stream()
                 .collect(Collectors.toMap(
                         Product::getId,
-                        p -> productImageRepository.findPrimaryImageByProductId(p.getId())
+                        p -> productImageRepository.findDisplayImagesByProductId(p.getId()).stream().findFirst()
                                 .map(ProductImage::getImageUrl)
                                 .orElse("/images/no-image.svg"),
                         (existing, newValue) -> existing
@@ -155,7 +155,7 @@ public class ProductController {
         Map<Long, String> imageUrls = products.stream()
                 .collect(Collectors.toMap(
                         Product::getId,
-                        p -> productImageRepository.findPrimaryImageByProductId(p.getId())
+                        p -> productImageRepository.findDisplayImagesByProductId(p.getId()).stream().findFirst()
                                 .map(ProductImage::getImageUrl)
                                 .orElse("/images/no-image.svg"),
                         (existing, newValue) -> existing
@@ -224,8 +224,24 @@ public class ProductController {
             return "redirect:/product";
         }
 
-        List<ProductImage> images = productImageRepository.findByProductId(id);
+        List<ProductImage> productImages = productImageRepository.findByProductId(id);
+        List<ProductImage> images = productImages.stream()
+                .filter(image -> image.getVariant() == null)
+                .collect(Collectors.toList());
         List<ProductVariant> variants = productVariantRepository.findByProductId(id);
+
+        if (images.isEmpty()) {
+            images = productImages;
+        }
+
+        Map<Long, List<String>> variantImageUrls = variants.stream()
+                .collect(Collectors.toMap(
+                        ProductVariant::getId,
+                        variant -> productImageRepository.findByVariantId(variant.getId()).stream()
+                                .map(ProductImage::getImageUrl)
+                                .collect(Collectors.toList()),
+                        (existing, replacement) -> existing
+                ));
 
         List<String> sizes = variants.stream()
                 .filter(v -> v != null && v.getSize() != null)
@@ -250,7 +266,7 @@ public class ProductController {
         Map<Long, String> relatedProductImages = relatedProducts.stream()
                 .collect(Collectors.toMap(
                         Product::getId,
-                        p -> productImageRepository.findPrimaryImageByProductId(p.getId())
+                        p -> productImageRepository.findDisplayImagesByProductId(p.getId()).stream().findFirst()
                                 .map(ProductImage::getImageUrl)
                                 .orElse("/images/no-image.svg"),
                         (existing, newValue) -> existing
@@ -277,6 +293,7 @@ public class ProductController {
 
         model.addAttribute("product", product);
         model.addAttribute("images", images);
+        model.addAttribute("variantImageUrls", variantImageUrls);
         model.addAttribute("variants", variants);
         model.addAttribute("sizes", sizes);
         model.addAttribute("colors", colors);
@@ -309,7 +326,7 @@ public class ProductController {
         Map<Long, String> imageUrls = products.stream()
                 .collect(Collectors.toMap(
                         Product::getId,
-                        p -> productImageRepository.findPrimaryImageByProductId(p.getId())
+                        p -> productImageRepository.findDisplayImagesByProductId(p.getId()).stream().findFirst()
                                 .map(ProductImage::getImageUrl)
                                 .orElse("/images/no-image.svg"),
                         (existing, newValue) -> existing

@@ -20,11 +20,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
@@ -190,7 +192,7 @@ public class AdminController {
                 for (MultipartFile imageFile : imageFiles) {
                     if (!imageFile.isEmpty()) {
                         String originalFileName = imageFile.getOriginalFilename();
-                        String sanitizedFileName = originalFileName.replaceAll("[^a-zA-Z0-9.-]", "_");
+                        String sanitizedFileName = UUID.randomUUID() + "_" + originalFileName.replaceAll("[^a-zA-Z0-9.-]", "_");
                         File saveFile = new File(uploadDir + sanitizedFileName);
                         imageFile.transferTo(saveFile);
 
@@ -315,13 +317,14 @@ public class AdminController {
         }
         model.addAttribute("variant", variant);
         model.addAttribute("products", productRepository.findAll());
+        model.addAttribute("variantImages", productImageRepository.findByVariantId(id));
         return "admin/variants";
     }
 
     @PostMapping("/variants/save")
     @Transactional
     public String saveVariant(@ModelAttribute("variant") ProductVariant variant,
-                             @RequestParam("imageFiles") MultipartFile[] imageFiles,
+                             @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles,
                              HttpServletRequest request,
                              RedirectAttributes redirectAttributes) {
         try {
@@ -340,12 +343,17 @@ public class AdminController {
                 uploadFolder.mkdirs();
             }
 
-            if (imageFiles != null) {
+            boolean hasNewImages = imageFiles != null && Arrays.stream(imageFiles).anyMatch(imageFile -> !imageFile.isEmpty());
+            if (hasNewImages) {
+                List<ProductImage> existingImages = productImageRepository.findByVariantId(savedVariant.getId());
+                for (ProductImage existingImage : existingImages) {
+                    deleteImageFile(existingImage, request);
+                }
                 productImageRepository.deleteByVariantId(savedVariant.getId());
                 for (MultipartFile imageFile : imageFiles) {
                     if (!imageFile.isEmpty()) {
                         String originalFileName = imageFile.getOriginalFilename();
-                        String sanitizedFileName = originalFileName.replaceAll("[^a-zA-Z0-9.-]", "_");
+                        String sanitizedFileName = UUID.randomUUID() + "_" + originalFileName.replaceAll("[^a-zA-Z0-9.-]", "_");
                         File saveFile = new File(uploadDir + sanitizedFileName);
                         imageFile.transferTo(saveFile);
 
@@ -365,6 +373,89 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("error", "Lỗi khi lưu ảnh: " + e.getMessage());
         }
         return "redirect:/admin/variants";
+    }
+
+    @PostMapping("/variants/images/upload/{variantId}")
+    @Transactional
+    public String uploadVariantImages(@PathVariable Long variantId,
+                                      @RequestParam("imageFiles") MultipartFile[] imageFiles,
+                                      HttpServletRequest request,
+                                      RedirectAttributes redirectAttributes) {
+        ProductVariant variant = productVariantRepository.findById(variantId).orElse(null);
+        if (variant == null) {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy biến thể!");
+            return "redirect:/admin/variants";
+        }
+
+        try {
+            String uploadDir = request.getServletContext().getRealPath("/uploads/");
+            File uploadFolder = new File(uploadDir);
+            if (!uploadFolder.exists()) {
+                uploadFolder.mkdirs();
+            }
+
+            boolean hasNewImages = imageFiles != null && Arrays.stream(imageFiles).anyMatch(imageFile -> !imageFile.isEmpty());
+            if (!hasNewImages) {
+                redirectAttributes.addFlashAttribute("error", "Vui lòng chọn ít nhất một ảnh!");
+                return "redirect:/admin/variants/edit/" + variantId;
+            }
+
+            List<ProductImage> existingImages = productImageRepository.findByVariantId(variantId);
+            for (ProductImage existingImage : existingImages) {
+                deleteImageFile(existingImage, request);
+            }
+            productImageRepository.deleteByVariantId(variantId);
+
+            for (MultipartFile imageFile : imageFiles) {
+                if (!imageFile.isEmpty()) {
+                    String originalFileName = imageFile.getOriginalFilename();
+                    String sanitizedFileName = originalFileName.replaceAll("[^a-zA-Z0-9.-]", "_");
+                    imageFile.transferTo(new File(uploadDir + sanitizedFileName));
+
+                    ProductImage productImage = new ProductImage();
+                    productImage.setProduct(variant.getProduct());
+                    productImage.setVariant(variant);
+                    productImage.setImageUrl("/uploads/" + sanitizedFileName);
+                    productImageRepository.save(productImage);
+                }
+            }
+            redirectAttributes.addFlashAttribute("success", "Ảnh biến thể đã được cập nhật!");
+        } catch (IOException e) {
+            logger.error("Could not upload variant images for variant ID: {}", variantId, e);
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật ảnh: " + e.getMessage());
+        }
+        return "redirect:/admin/variants/edit/" + variantId;
+    }
+
+    @PostMapping("/variants/images/delete/{id}")
+    @Transactional
+    public String deleteVariantImage(@PathVariable Long id,
+                                     @RequestParam("variantId") Long variantId,
+                                     HttpServletRequest request,
+                                     RedirectAttributes redirectAttributes) {
+        ProductImage image = productImageRepository.findById(id).orElse(null);
+        if (image == null || image.getVariant() == null || !variantId.equals(image.getVariant().getId())) {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy ảnh của biến thể!");
+            return "redirect:/admin/variants/edit/" + variantId;
+        }
+
+        deleteImageFile(image, request);
+        productImageRepository.delete(image);
+        redirectAttributes.addFlashAttribute("success", "Ảnh biến thể đã được xóa!");
+        return "redirect:/admin/variants/edit/" + variantId;
+    }
+
+    private void deleteImageFile(ProductImage image, HttpServletRequest request) {
+        if (image.getImageUrl() == null || !image.getImageUrl().startsWith("/uploads/")) {
+            return;
+        }
+        String filePath = request.getServletContext().getRealPath(image.getImageUrl());
+        if (filePath != null) {
+            File imageFile = new File(filePath);
+            if (imageFile.exists() && !imageFile.delete()) {
+                logger.warn("Could not delete image file: {}", filePath);
+            }
+        }
     }
 
     @GetMapping("/variants/delete/{id}")

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,15 @@ import com.poly.asm.entitys.Product;
 import com.poly.asm.entitys.ProductImage;
 import com.poly.asm.entitys.ProductVariant;
 import com.poly.asm.services.CartService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class HomeController {
+
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @Autowired
     private CartService cartService;
@@ -48,7 +53,7 @@ public class HomeController {
 
     @ModelAttribute
     public void addAttributesToAllModels(HttpServletRequest request, Model model) {
-        Cart cart = cartService.getCart(request); // Đúng
+        Cart cart = cartService.getCart(request);
         int cartItemCount = cart != null ? cart.getCartItems().size() : 0;
         model.addAttribute("cartItemCount", cartItemCount);
     }
@@ -60,13 +65,27 @@ public class HomeController {
         Page<Product> newProductsPage = productRepository.findAll(pageable);
         List<Product> newProducts = newProductsPage.getContent();
 
-        // Tạo map imageUrls
+        // Tạo map imageUrls - lấy ảnh đại diện, nếu không có thì lấy ảnh đầu tiên
         Map<Long, String> imageUrls = newProducts.stream()
                 .collect(Collectors.toMap(
                         Product::getId,
-                        p -> productImageRepository.findPrimaryImageByProductId(p.getId())
-                                .map(ProductImage::getImageUrl)
-                                .orElse("/images/no-image.svg"),
+                        p -> {
+                            // Cố gắng lấy ảnh đại diện (variant IS NULL)
+                            Optional<String> primaryImage = productImageRepository.findPrimaryImageByProductId(p.getId())
+                                    .map(ProductImage::getImageUrl);
+                            
+                            // Nếu không có, lấy ảnh đầu tiên của sản phẩm
+                            if (primaryImage.isPresent()) {
+                                return primaryImage.get();
+                            }
+                            
+                            List<ProductImage> allImages = productImageRepository.findByProductId(p.getId());
+                            if (!allImages.isEmpty()) {
+                                return allImages.get(0).getImageUrl();
+                            }
+                            
+                            return "/images/no-image.svg";
+                        },
                         (existing, newValue) -> existing
                 ));
 
@@ -96,7 +115,14 @@ public class HomeController {
         model.addAttribute("formattedPrices", formattedPrices);
         model.addAttribute("categories", categoryRepository.findAll());
 
-        return "web/home"; // Trỏ đến file index.html
+        // Debug logging
+        logger.info("Home page: {} products loaded", newProducts.size());
+        newProducts.forEach(p -> {
+            String imageUrl = imageUrls.get(p.getId());
+            logger.info("Product ID={}, Name={}, Image={}", p.getId(), p.getName(), imageUrl);
+        });
+
+        return "web/home";
     }
     
     @GetMapping("/introduction")

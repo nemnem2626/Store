@@ -23,4 +23,7 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     // Lấy ảnh đại diện (variant_id = NULL) cho sản phẩm
     @Query("SELECT pi FROM ProductImage pi WHERE pi.product.id = :productId AND pi.variant IS NULL ORDER BY pi.id")
     Optional<ProductImage> findPrimaryImageByProductId(@Param("productId") Long productId);
+
+    @Query("SELECT pi FROM ProductImage pi WHERE pi.product.id = :productId ORDER BY CASE WHEN pi.variant IS NULL THEN 1 ELSE 0 END, pi.id")
+    List<ProductImage> findDisplayImagesByProductId(@Param("productId") Long productId);
 }

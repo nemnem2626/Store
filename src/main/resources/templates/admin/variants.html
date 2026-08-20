@@ -153,13 +153,7 @@
                   />
                 </div>
                 <div class="form-group">
-                  <label for="imageFiles">Ảnh biến thể:</label>
-                  <input
-                    type="file"
-                    class="form-control"
-                    name="imageFiles"
-                    multiple
-                  />
+                  <input type="hidden" name="imageFiles" value="" />
                 </div>
                 <button
                   type="submit"
@@ -169,6 +163,38 @@
                 <a th:href="@{/admin/variants}" class="btn btn-secondary"
                   >Hủy</a
                 >
+              </form>
+            </div>
+          </div>
+
+          <!-- Khu vực quản lý ảnh riêng -->
+          <div class="card mt-4" th:if="${variant != null && variant.id != null}">
+            <div class="card-header bg-info text-white">
+              <h5 class="card-title mb-0"><i class="fas fa-images mr-2"></i>Quản lý ảnh biến thể</h5>
+            </div>
+            <div class="card-body">
+              <div class="d-flex flex-wrap" th:if="${variantImages != null && !variantImages.isEmpty()}">
+                <div class="mr-3 mb-3 text-center" th:each="image : ${variantImages}">
+                  <img th:src="@{${image.imageUrl}}" alt="Ảnh biến thể" style="width: 140px; height: 140px; object-fit: cover;" class="d-block mb-2 rounded" />
+                  <form th:action="@{/admin/variants/images/delete/{id}(id=${image.id})}" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa ảnh này?');">
+                    <input type="hidden" name="variantId" th:value="${variant.id}" />
+                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                      <i class="fas fa-trash mr-1"></i>Xóa ảnh
+                    </button>
+                  </form>
+                </div>
+              </div>
+              <p class="text-muted" th:if="${variantImages == null || variantImages.isEmpty()}">Biến thể chưa có ảnh.</p>
+              <hr />
+              <form th:action="@{/admin/variants/images/upload/{id}(id=${variant.id})}" method="post" enctype="multipart/form-data">
+                <label for="variantImageFiles">Thay đổi ảnh:</label>
+                <div class="input-group">
+                  <input id="variantImageFiles" type="file" class="form-control" name="imageFiles" accept="image/*" multiple required />
+                  <div class="input-group-append">
+                    <button type="submit" class="btn btn-info"><i class="fas fa-upload mr-1"></i>Cập nhật ảnh</button>
+                  </div>
+                </div>
+                <small class="form-text text-muted">Chọn một hoặc nhiều ảnh mới. Các ảnh hiện tại sẽ được thay thế.</small>
               </form>
             </div>
           </div>
