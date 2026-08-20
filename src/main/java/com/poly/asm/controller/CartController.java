@@ -125,6 +125,7 @@ public class CartController {
             @RequestParam("productId") Long productId,
             @RequestParam("variantId") Long variantId,
             @RequestParam("quantity") int quantity,
+            @RequestParam(value = "buyNow", defaultValue = "false") boolean buyNow,
             HttpServletRequest request,
             HttpServletResponse response,
             RedirectAttributes redirectAttributes) {
@@ -139,7 +140,7 @@ public class CartController {
             return "redirect:/product/detail/" + productId + "?error=" + URLEncoder.encode(error, StandardCharsets.UTF_8);
         }
         redirectAttributes.addFlashAttribute("success", "Thêm vào giỏ hàng thành công!");
-        return "redirect:/product/detail/" + productId;
+        return buyNow ? "redirect:/cart" : "redirect:/product/detail/" + productId;
     }
 
     @PostMapping("/update/{variantId}")
