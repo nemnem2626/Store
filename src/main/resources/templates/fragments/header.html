@@ -6,6 +6,22 @@
   </head>
   <body>
     <div th:fragment="siteHeader">
+      <!-- TOPBAR -->
+      <div class="st-topbar d-none d-lg-block">
+        <div
+          class="container d-flex justify-content-between align-items-center py-2"
+        >
+          <span
+            ><i class="bi bi-truck me-1"></i> Miễn phí giao hàng toàn quốc cho
+            đơn từ 5 triệu</span
+          >
+          <span class="d-flex gap-3">
+            <a href="tel:0123456789"><i class="bi bi-telephone me-1"></i> 012 345 6789</a>
+            <a th:href="@{/policy}"><i class="bi bi-shield-check me-1"></i> Chính sách bảo hành</a>
+          </span>
+        </div>
+      </div>
+
       <!-- HEADER -->
       <nav
         class="navbar navbar-expand-lg bg-white shadow-sm sticky-top custom-header"

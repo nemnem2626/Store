@@ -25,16 +25,28 @@
         .variant-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .variant-btn:hover:not(:disabled) { background-color: #e9ecef; }
     </style>
+<!-- Theme dùng chung -->
+<link rel="stylesheet" th:href="@{/css/theme.css}" />
 </head>
 <body>
     <!-- Header -->
     <div th:replace="fragments/header :: siteHeader"></div>
 
+    <!-- Breadcrumb -->
+    <div class="container pt-4">
+        <nav class="st-breadcrumb" style="color: var(--st-muted)">
+            <a th:href="@{/home}" style="color: var(--st-muted)">Trang chủ</a> <span>/</span>
+            <a th:href="@{/product}" style="color: var(--st-muted)">Sản phẩm</a> <span>/</span>
+            <span th:text="${product.name}">Chi tiết</span>
+        </nav>
+    </div>
+
     <!-- Main Content -->
-    <div class="container my-5" id="productContainer" th:data-product-id="${product.id}">
-        <div class="row">
+    <div class="container mb-5" id="productContainer" th:data-product-id="${product.id}">
+        <div class="row g-4">
             <!-- Hình ảnh sản phẩm -->
-            <div class="col-md-6">
+            <div class="col-lg-6">
+              <div class="st-panel">
                 <div class="product-detail">
                     <img th:src="${images != null and !images.isEmpty() ? images[0].imageUrl : '/images/no-image.svg'}"
                          alt="Product Image" class="img-fluid rounded" id="mainImage">
@@ -59,11 +71,22 @@
                 <div class="alert alert-warning" th:if="${images == null or images.isEmpty()}">
                     <p>Không có hình ảnh cho sản phẩm này.</p>
                 </div>
+              </div>
             </div>
 
             <!-- Thông tin sản phẩm -->
-            <div class="col-md-6">
-                <h3 th:text="${product.name}">Tên sản phẩm</h3>
+            <div class="col-lg-6">
+              <div class="st-panel">
+                <span class="st-product-cat"
+                      th:text="${product.category != null ? product.category.name : 'Điện thoại'}"></span>
+                <h3 class="mt-1" th:text="${product.name}">Tên sản phẩm</h3>
+
+                <div class="st-rating mb-2">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                        class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                        class="bi bi-star-half"></i>
+                    <span class="ms-1">4.8 · Đã bán 1.2k</span>
+                </div>
 
                 <strong class="text-danger product-price"
                         th:text="${variants != null and !variants.isEmpty() ? #numbers.formatDecimal(variants[0].price, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : 'COMING SOON'}">
@@ -116,12 +139,15 @@
                         <span id="stockDisplay" class="text-muted">Chọn kích thước và màu sắc để xem số lượng tồn kho</span>
                     </div>
 
-                    <button type="submit" class="btn btn-dark btn-lg mt-3"
-                            th:disabled="${variants == null or variants.isEmpty()}" id="addToCartBtn">Thêm vào giỏ hàng</button>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <button type="submit" class="btn btn-st-primary btn-lg"
+                                th:disabled="${variants == null or variants.isEmpty()}" id="addToCartBtn">
+                            <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ hàng</button>
 
-                    <a th:href="@{/cart/add(productId=${product.id},variantId=${variants != null and !variants.isEmpty() ? variants[0].id : 0},quantity=1)}"
-                       class="btn btn-danger btn-lg mt-3"
-                       th:if="${variants != null and !variants.isEmpty()}" id="buyNowBtn">Mua ngay</a>
+                        <a th:href="@{/cart/add(productId=${product.id},variantId=${variants != null and !variants.isEmpty() ? variants[0].id : 0},quantity=1)}"
+                           class="btn btn-st-accent btn-lg"
+                           th:if="${variants != null and !variants.isEmpty()}" id="buyNowBtn">Mua ngay</a>
+                    </div>
                 </form>
 
                 <!-- Chưa đăng nhập -->
@@ -158,9 +184,33 @@
                         <span id="stockDisplay" class="text-muted">Chọn kích thước và màu sắc để xem số lượng</span>
                     </div>
 
-                    <button class="btn btn-dark btn-lg mt-3" onclick="showLoginAlert()">Thêm vào giỏ hàng</button>
-                    <button class="btn btn-danger btn-lg mt-3" onclick="showLoginAlert()">Mua ngay</button>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <button class="btn btn-st-primary btn-lg" onclick="showLoginAlert()">
+                            <i class="bi bi-cart-plus me-1"></i>Thêm vào giỏ hàng</button>
+                        <button class="btn btn-st-accent btn-lg" onclick="showLoginAlert()">Mua ngay</button>
+                    </div>
                 </div>
+
+                <hr class="st-divider">
+                <div class="row g-3">
+                    <div class="col-sm-6 d-flex align-items-center gap-2">
+                        <i class="bi bi-patch-check text-danger"></i>
+                        <small>Hàng chính hãng, nguyên seal</small>
+                    </div>
+                    <div class="col-sm-6 d-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-repeat text-danger"></i>
+                        <small>Bảo hành 1 đổi 1 – 12 tháng</small>
+                    </div>
+                    <div class="col-sm-6 d-flex align-items-center gap-2">
+                        <i class="bi bi-truck text-danger"></i>
+                        <small>Giao nhanh 2 giờ nội thành</small>
+                    </div>
+                    <div class="col-sm-6 d-flex align-items-center gap-2">
+                        <i class="bi bi-credit-card-2-front text-danger"></i>
+                        <small>Trả góp 0% qua thẻ</small>
+                    </div>
+                </div>
+              </div>
             </div>
         </div>
 
@@ -172,20 +222,17 @@
                 <div class="swiper related-products-swiper">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide" th:each="relatedProduct : ${relatedProducts}">
-                            <div class="card h-100 shadow-sm border-0 rounded-3 product-card">
-                                <a th:href="@{/product/detail/{id}(id=${relatedProduct.id})}" class="text-decoration-none text-dark">
-                                    <img th:src="${relatedProductImages.get(relatedProduct.id)}" 
-                                         class="card-img-top rounded-3" 
-                                         alt="Related Product" 
-                                         style="height: 200px; object-fit: cover;">
-                                    <div class="card-body text-center">
-                                        <h6 class="card-title text-truncate mb-2" th:text="${relatedProduct.name}">Sản phẩm</h6>
-                                        <strong th:class="${relatedProductPrices.get(relatedProduct.id) == 'COMING SOON' ? 'coming-soon fs-5' : 'text-danger fs-5'}" 
-                                                th:text="${relatedProductPrices.get(relatedProduct.id) == 'COMING SOON' ? 'COMING SOON' : relatedProductPrices.get(relatedProduct.id) + ' VND'}">
-                                            0 VND
-                                        </strong>
-                                    </div>
+                            <div class="st-product-card h-100">
+                                <a class="st-product-media" th:href="@{/product/detail/{id}(id=${relatedProduct.id})}">
+                                    <img th:src="${relatedProductImages.get(relatedProduct.id)}" alt="Related Product" loading="lazy">
                                 </a>
+                                <div class="st-product-body">
+                                    <a class="st-product-name" th:href="@{/product/detail/{id}(id=${relatedProduct.id})}"
+                                       th:text="${relatedProduct.name}">Sản phẩm</a>
+                                    <p th:class="${relatedProductPrices.get(relatedProduct.id) == 'COMING SOON' ? 'st-product-price -soon' : 'st-product-price'}"
+                                       th:text="${relatedProductPrices.get(relatedProduct.id) == 'COMING SOON' ? 'COMING SOON' : relatedProductPrices.get(relatedProduct.id) + ' ₫'}">
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
