@@ -12,6 +12,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
   </head>
   <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -84,7 +85,12 @@
       <!-- Content Wrapper -->
       <div class="content-wrapper">
         <div class="container mt-4">
-          <h2 class="mb-3">Quản lý Đơn hàng</h2>
+          <div class="ad-page-head">
+            <div>
+              <h2>Quản lý Đơn hàng</h2>
+              <p>Theo dõi và cập nhật trạng thái đơn hàng của khách.</p>
+            </div>
+          </div>
 
           <!-- Thông báo -->
           <div
@@ -116,7 +122,7 @@
 
           <!-- Bảng danh sách đơn hàng -->
           <div class="card mt-4">
-            <div class="card-header bg-dark text-white">
+            <div class="card-header">
               <h5 class="card-title">Danh sách đơn hàng</h5>
             </div>
             <div class="card-body">
@@ -143,9 +149,15 @@
                     <td
                       th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 2, 'POINT')} + ' VNĐ'"
                     ></td>
-                    <td
-                      th:text="${@orderService.getVietnameseStatus(order.status)}"
-                    ></td>
+                    <td>
+                      <span
+                        class="ad-badge"
+                        th:classappend="${order.status} == 'PENDING' ? 'ad-badge-pending' :
+                          (${order.status} == 'SHIPPING' ? 'ad-badge-shipping' :
+                          (${order.status} == 'CANCELED' ? 'ad-badge-cancel' : 'ad-badge-done'))"
+                        th:text="${@orderService.getVietnameseStatus(order.status)}"
+                      ></span>
+                    </td>
                     <td>
                       <a
                         th:href="@{/admin/orders/{id}(id=${order.id})}"

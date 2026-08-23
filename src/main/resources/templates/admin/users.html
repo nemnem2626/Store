@@ -12,6 +12,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
   </head>
   <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -84,7 +85,12 @@
       <!-- Content Wrapper -->
       <div class="content-wrapper">
         <div class="container mt-4">
-          <h2 class="mb-3">Quản lý Người dùng</h2>
+          <div class="ad-page-head">
+            <div>
+              <h2>Quản lý Người dùng</h2>
+              <p>Quản lý tài khoản và phân quyền truy cập.</p>
+            </div>
+          </div>
 
           <!-- Thông báo -->
           <div
@@ -116,7 +122,7 @@
 
           <!-- Form thêm/sửa người dùng -->
           <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
               <h5
                 class="card-title"
                 th:text="${user != null && user.id != null ? 'Chỉnh sửa người dùng' : 'Thêm người dùng mới'}"
@@ -131,7 +137,8 @@
                 <input type="hidden" th:field="*{id}" />
                 <input type="hidden" th:field="*{provider}" />
                 <input type="hidden" th:field="*{providerId}" />
-                <div class="form-group">
+                <div class="row">
+                <div class="form-group col-md-6">
                   <label for="username">Tên đăng nhập:</label>
                   <input
                     type="text"
@@ -140,7 +147,7 @@
                     required
                   />
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6">
                   <label for="password">Mật khẩu:</label>
                   <input
                     type="password"
@@ -149,7 +156,7 @@
                     th:required="${user != null && user.id == null}"
                   />
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6">
                   <label for="email">Email:</label>
                   <input
                     type="email"
@@ -158,7 +165,7 @@
                     required
                   />
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6">
                   <label for="fullname">Họ và tên:</label>
                   <input
                     type="text"
@@ -166,11 +173,11 @@
                     th:field="*{fullname}"
                   />
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6">
                   <label for="phone">Số điện thoại:</label>
                   <input type="text" class="form-control" th:field="*{phone}" />
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6">
                   <label for="address">Địa chỉ:</label>
                   <input
                     type="text"
@@ -178,7 +185,7 @@
                     th:field="*{address}"
                   />
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6">
                   <label for="role">Quyền:</label>
                   <select class="form-control" th:field="*{role}">
                     <option value="USER">USER</option>
@@ -186,12 +193,13 @@
                     <option value="STAFF">STAFF</option>
                   </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-6">
                   <label for="active">Trạng thái:</label>
                   <select class="form-control" th:field="*{active}">
                     <option value="true">Hoạt động</option>
                     <option value="false">Khóa</option>
                   </select>
+                </div>
                 </div>
                 <button
                   type="submit"
@@ -205,7 +213,7 @@
 
           <!-- Bảng danh sách người dùng -->
           <div class="card mt-4">
-            <div class="card-header bg-dark text-white">
+            <div class="card-header">
               <h5 class="card-title">Danh sách người dùng</h5>
             </div>
             <div class="card-body">

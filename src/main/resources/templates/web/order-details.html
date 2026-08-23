@@ -19,11 +19,22 @@
 <!-- Header -->
   <div th:replace="fragments/header :: siteHeader"></div>
 
-    <div class="order-detail-container pb-5 pt-5">
+    <section class="st-page-hero">
+        <div class="container">
+            <nav class="st-breadcrumb">
+                <a th:href="@{/home}">Trang chủ</a> <span>/</span>
+                <a th:href="@{/orders}">Đơn hàng</a> <span>/</span>
+                <span>Chi tiết</span>
+            </nav>
+            <h1>Đơn hàng #<span th:text="${order?.id}">0</span></h1>
+            <p>Thông tin nhận hàng và sản phẩm trong đơn.</p>
+        </div>
+    </section>
+
+    <div class="order-detail-container pb-5 pt-4">
         <div class="container ">
-            <div class="card shadow-sm rounded-4 border-0">
-                <div class="card-body p-4">
-                    <h3 class="mb-4 fw-bold text-dark" >Đơn hàng #<span th:text="${order?.id}"></span></h3>
+            <div class="st-panel">
+                <div class="p-1">
 
                     <!-- Thông báo -->
                     <div th:if="${message}" class="alert alert-success alert-dismissible fade show mb-4" role="alert" th:text="${message}">
@@ -34,6 +45,7 @@
                     </div>
 
                     <!-- Thông tin người nhận -->
+                    <h5 class="st-panel-title">Thông tin nhận hàng</h5>
                     <div th:if="${order}" class="row g-4 mb-4">
                         <div class="col-md-6">
                             <p class="mb-1 fw-semibold text-muted">Họ tên</p>
@@ -50,7 +62,13 @@
                             <p class="fs-5" th:text="${order.paymentMethod} ?: 'Chưa cập nhật'"></p>
 
                             <p class="mb-1 fw-semibold text-muted">Trạng thái</p>
-                            <p class="fs-5" th:text="${@orderService.getVietnameseStatus(order.status) ?: 'Chưa cập nhật'}"></p>
+                            <p class="fs-5">
+                                <span class="badge rounded-pill px-3 py-2 text-uppercase fw-semibold"
+                                      th:classappend="${order.status} == 'PENDING' ? 'text-bg-warning' :
+                                          (${order.status} == 'SHIPPING' ? 'text-bg-info' :
+                                          (${order.status} == 'CANCELED' ? 'text-bg-danger' : 'text-bg-success'))"
+                                      th:text="${@orderService.getVietnameseStatus(order.status) ?: 'Chưa cập nhật'}"></span>
+                            </p>
 
                             <p class="mb-1 fw-semibold text-muted">Ngày đặt</p>
                             <p class="fs-5" th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')} ?: 'Chưa xác định'"></p>
@@ -58,6 +76,7 @@
                     </div>
 
                     <!-- Danh sách sản phẩm -->
+                    <h5 class="st-panel-title">Sản phẩm trong đơn</h5>
                     <div th:if="${order}" class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead class="table-light">
@@ -101,9 +120,9 @@
 
                     <!-- Nút quay lại và hủy -->
                     <div class="mt-4">
-                        <a th:href="@{/orders}" class="btn btn-outline-dark rounded-pill px-4">← Quay lại danh sách</a>
+                        <a th:href="@{/orders}" class="btn btn-st-ghost">← Quay lại danh sách</a>
                         <form th:if="${order?.status == 'PENDING'}" th:action="@{'/orders/cancel/' + ${order.id}}" method="post" style="display:inline; margin-left: 10px;">
-                            <button type="submit" class="btn btn-outline-danger rounded-pill px-4">
+                            <button type="submit" class="btn btn-st-outline" style="border-color: var(--st-accent); color: var(--st-accent)">
                                 <i class="bi bi-x-circle"></i> Hủy đơn hàng
                             </button>
                         </form>

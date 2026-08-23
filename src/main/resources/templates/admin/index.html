@@ -13,6 +13,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
   </head>
   <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -100,49 +101,117 @@
               <div class="col-lg-3 col-6">
                 <div class="small-box bg-info">
                   <div class="inner">
-                    <h4>Sản phẩm</h4>
-                    <p>Thêm, sửa, xoá sản phẩm</p>
+                    <h3 th:text="${productCount}">0</h3>
+                    <p>Sản phẩm</p>
                   </div>
                   <div class="icon"><i class="fas fa-box"></i></div>
                   <a th:href="@{/admin/products}" class="small-box-footer"
-                    >Truy cập <i class="fas fa-arrow-circle-right"></i
+                    >Quản lý <i class="fas fa-arrow-circle-right"></i
                   ></a>
                 </div>
               </div>
               <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                   <div class="inner">
-                    <h4>Đơn hàng</h4>
-                    <p>Theo dõi &amp; cập nhật trạng thái</p>
+                    <h3 th:text="${orderCount}">0</h3>
+                    <p>
+                      Đơn hàng (<span th:text="${pendingCount}">0</span> chờ xử
+                      lý)
+                    </p>
                   </div>
                   <div class="icon"><i class="fas fa-shopping-cart"></i></div>
                   <a th:href="@{/admin/orders}" class="small-box-footer"
-                    >Truy cập <i class="fas fa-arrow-circle-right"></i
+                    >Quản lý <i class="fas fa-arrow-circle-right"></i
                   ></a>
                 </div>
               </div>
               <div class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                   <div class="inner">
-                    <h4>Biến thể</h4>
-                    <p>Dung lượng, màu sắc, tồn kho</p>
+                    <h3 th:text="${variantCount}">0</h3>
+                    <p>Biến thể (dung lượng, màu)</p>
                   </div>
                   <div class="icon"><i class="fas fa-cogs"></i></div>
                   <a th:href="@{/admin/variants}" class="small-box-footer"
-                    >Truy cập <i class="fas fa-arrow-circle-right"></i
+                    >Quản lý <i class="fas fa-arrow-circle-right"></i
                   ></a>
                 </div>
               </div>
               <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
                   <div class="inner">
-                    <h4>Người dùng</h4>
-                    <p>Tài khoản &amp; phân quyền</p>
+                    <h3 th:text="${userCount}">0</h3>
+                    <p>Người dùng</p>
                   </div>
                   <div class="icon"><i class="fas fa-users"></i></div>
                   <a th:href="@{/admin/users}" class="small-box-footer"
-                    >Truy cập <i class="fas fa-arrow-circle-right"></i
+                    >Quản lý <i class="fas fa-arrow-circle-right"></i
                   ></a>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="card mb-4">
+                  <div class="card-header"><h5>Doanh thu (đơn chưa hủy)</h5></div>
+                  <div class="card-body">
+                    <h3 class="fw-bold mb-0" style="color: var(--ad-accent)">
+                      <span
+                        th:text="${#numbers.formatDecimal(revenue, 0, 'COMMA', 0, 'POINT')}"
+                        >0</span
+                      >
+                      VNĐ
+                    </h3>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-8">
+                <div class="card mb-4">
+                  <div class="card-header"><h5>Đơn hàng gần đây</h5></div>
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Khách hàng</th>
+                          <th>Tổng tiền</th>
+                          <th>Trạng thái</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="o : ${recentOrders}">
+                          <td th:text="${o.id}"></td>
+                          <td th:text="${o.fullname}"></td>
+                          <td
+                            th:text="${#numbers.formatDecimal(o.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
+                          ></td>
+                          <td>
+                            <span
+                              class="ad-badge"
+                              th:classappend="${o.status} == 'PENDING' ? 'ad-badge-pending' :
+                                (${o.status} == 'SHIPPING' ? 'ad-badge-shipping' :
+                                (${o.status} == 'CANCELED' ? 'ad-badge-cancel' : 'ad-badge-done'))"
+                              th:text="${@orderService.getVietnameseStatus(o.status)}"
+                            ></span>
+                          </td>
+                          <td>
+                            <a
+                              class="btn btn-sm btn-outline-secondary"
+                              th:href="@{'/admin/orders/' + ${o.id}}"
+                              >Xem</a
+                            >
+                          </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(recentOrders)}">
+                          <td colspan="5" class="text-center text-muted py-3">
+                            Chưa có đơn hàng nào.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>

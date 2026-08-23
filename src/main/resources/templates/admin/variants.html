@@ -13,6 +13,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
   </head>
   <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -85,11 +86,16 @@
       <!-- Content Wrapper -->
       <div class="content-wrapper">
         <div class="container mt-4">
-          <h2 class="mb-3">Quản lý Biến thể</h2>
+          <div class="ad-page-head">
+            <div>
+              <h2>Quản lý Biến thể</h2>
+              <p>Dung lượng, màu sắc, giá và tồn kho của từng sản phẩm.</p>
+            </div>
+          </div>
 
           <!-- Form thêm/sửa biến thể -->
           <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
               <h5
                 class="card-title"
                 th:text="${variant != null && variant.id != null ? 'Chỉnh sửa biến thể' : 'Thêm biến thể mới'}"
@@ -169,7 +175,7 @@
 
           <!-- Khu vực quản lý ảnh riêng -->
           <div class="card mt-4" th:if="${variant != null && variant.id != null}">
-            <div class="card-header bg-info text-white">
+            <div class="card-header">
               <h5 class="card-title mb-0"><i class="fas fa-images mr-2"></i>Quản lý ảnh biến thể</h5>
             </div>
             <div class="card-body">
@@ -201,7 +207,7 @@
 
           <!-- Bảng danh sách biến thể -->
           <div class="card mt-4">
-            <div class="card-header bg-dark text-white">
+            <div class="card-header">
               <h5 class="card-title">Danh sách biến thể</h5>
             </div>
             <div class="card-body">

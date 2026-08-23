@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -117,7 +118,24 @@ public class AdminController {
     // ----------- TRANG CHỦ -----------
 
     @GetMapping("/index")
-    public String home() {
+    public String home(Model model) {
+        List<Order> orders = orderRepository.findAll();
+        model.addAttribute("productCount", productRepository.count());
+        model.addAttribute("variantCount", productVariantRepository.count());
+        model.addAttribute("userCount", userRepository.count());
+        model.addAttribute("orderCount", orders.size());
+        model.addAttribute("pendingCount",
+                orders.stream().filter(o -> "PENDING".equalsIgnoreCase(o.getStatus())).count());
+        model.addAttribute("revenue", orders.stream()
+                .filter(o -> !"CANCELED".equalsIgnoreCase(o.getStatus()))
+                .map(Order::getTotalPrice)
+                .filter(Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .sum());
+        model.addAttribute("recentOrders", orders.stream()
+                .sorted((a, b) -> Long.compare(b.getId(), a.getId()))
+                .limit(5)
+                .collect(Collectors.toList()));
         return "admin/index";
     }
 

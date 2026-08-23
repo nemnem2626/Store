@@ -1,9 +1,7 @@
 /* General Styles */
 body {
-    background: linear-gradient(135deg, #e0f7fa 0%, #d1c4e9 100%);
+    background: var(--st-bg, #f6f7fb);
     transition: all 0.3s ease;
-    background-size: 200% 200%;
-    animation: gradient 15s ease infinite;
 }
 
 /* Dynamic Background Animation */
