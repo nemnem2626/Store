@@ -89,18 +89,18 @@
     <!-- Header -->
     <div th:replace="fragments/header :: siteHeader"></div>
 
-    <div class="container mt-5">
-      <h2
-        class="text-center mb-4"
-        style="
-          font-family: &quot;Arial&quot;, sans-serif;
-          font-weight: 700;
-          color: #333;
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        "
-      >
-        Cập Nhật Thông Tin Cá Nhân
-      </h2>
+    <section class="st-page-hero">
+      <div class="container">
+        <nav class="st-breadcrumb">
+          <a th:href="@{/home}">Trang chủ</a> <span>/</span>
+          <span>Tài khoản</span>
+        </nav>
+        <h1>Thông tin cá nhân</h1>
+        <p>Cập nhật họ tên, số điện thoại để đặt hàng nhanh hơn.</p>
+      </div>
+    </section>
+
+    <div class="container mt-4">
       <div
         th:if="${message}"
         th:with="alertClass=${message.startsWith('Cập nhật thông tin thành công') ? 'custom-alert-success' : 'custom-alert-danger'}"
@@ -117,8 +117,8 @@
       </div>
       <div class="row justify-content-center">
         <div class="col-md-6">
-          <div class="card profile-card">
-            <div class="card-body">
+          <div class="st-panel profile-card">
+            <div>
               <form
                 th:action="@{/user/update}"
                 method="post"
@@ -191,7 +191,7 @@
                     style="display: none"
                   ></small>
                 </div>
-                <button type="submit" class="btn btn-custom w-100">
+                <button type="submit" class="btn btn-st-primary w-100">
                   <i class="bi bi-check-circle-fill me-2"></i>Cập Nhật
                 </button>
               </form>

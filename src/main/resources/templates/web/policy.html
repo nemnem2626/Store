@@ -23,11 +23,20 @@
 
 	<div th:replace="fragments/header :: siteHeader"></div>
 
+	<section class="st-page-hero">
+		<div class="container">
+			<nav class="st-breadcrumb">
+				<a th:href="@{/home}">Trang chủ</a> <span>/</span> <span>Chính sách</span>
+			</nav>
+			<h1>Chính sách &amp; Điều khoản</h1>
+			<p>Quy định bán hàng, đổi trả và bảo hành tại STORE®.</p>
+		</div>
+	</section>
+
 	<div class="container py-5 policy-page">
-		<h1 class="text-center mb-5">Chính sách & Điều khoản của STORE®</h1>
 
 		<!-- Chính sách bán hàng -->
-		<section class="mb-5">
+		<section class="st-panel mb-4">
 			<h2>📌 Chính sách bán hàng</h2>
 			<p>STORE® cam kết cung cấp sản phẩm chất lượng cao, đúng mô tả và
 				nguồn gốc rõ ràng. Chúng tôi đảm bảo rằng mỗi sản phẩm đều được kiểm
@@ -41,7 +50,7 @@
 		</section>
 
 		<!-- Chính sách đổi trả -->
-		<section class="mb-5">
+		<section class="st-panel mb-4">
 			<h2>🔄 Chính sách đổi trả</h2>
 			<p>
 				Khách hàng có thể đổi/trả sản phẩm trong vòng <strong>7
@@ -61,7 +70,7 @@
 		</section>
 
 		<!-- Điều khoản & điều kiện -->
-		<section>
+		<section class="st-panel mb-4">
 			<h2>📃 Điều khoản & điều kiện</h2>
 			<p>Khi sử dụng dịch vụ của STORE®, bạn đồng ý với các điều khoản
 				sau:</p>

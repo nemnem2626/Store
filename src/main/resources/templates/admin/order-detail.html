@@ -12,6 +12,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
   </head>
   <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -84,7 +85,24 @@
       <!-- Content Wrapper -->
       <div class="content-wrapper">
         <div class="container mt-4">
-          <h2>Chi tiết đơn hàng #<span th:text="${order.id}"></span></h2>
+          <div class="ad-page-head">
+            <div>
+              <h2>Chi tiết đơn hàng #<span th:text="${order.id}"></span></h2>
+              <p>Thông tin khách hàng, sản phẩm và trạng thái xử lý.</p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span
+                class="ad-badge"
+                th:classappend="${order.status} == 'PENDING' ? 'ad-badge-pending' :
+                  (${order.status} == 'SHIPPING' ? 'ad-badge-shipping' :
+                  (${order.status} == 'CANCELED' ? 'ad-badge-cancel' : 'ad-badge-done'))"
+                th:text="${@orderService.getVietnameseStatus(order.status)}"
+              ></span>
+              <a th:href="@{/admin/orders}" class="btn btn-outline-secondary btn-sm"
+                >← Danh sách đơn</a
+              >
+            </div>
+          </div>
 
           <!-- Thông báo -->
           <div
@@ -115,6 +133,7 @@
           </div>
 
           <div class="card mb-4">
+            <div class="card-header"><h5>Thông tin nhận hàng</h5></div>
             <div class="card-body">
               <p>
                 <strong>Họ tên:</strong>
@@ -147,9 +166,11 @@
             </div>
           </div>
 
-          <h3 class="mb-3">Danh sách sản phẩm</h3>
-          <table class="table table-striped table-bordered">
-            <thead class="thead-dark">
+          <div class="card mb-4">
+            <div class="card-header"><h5>Danh sách sản phẩm</h5></div>
+            <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
               <tr>
                 <th scope="col">Tên sản phẩm</th>
                 <th scope="col">Size</th>
@@ -190,13 +211,17 @@
               </tr>
             </tbody>
           </table>
+            </div>
+          </div>
 
-          <h4 class="mt-4">Cập nhật trạng thái đơn hàng</h4>
+          <div class="card mb-4">
+            <div class="card-header"><h5>Cập nhật trạng thái đơn hàng</h5></div>
+            <div class="card-body">
           <form
             th:action="@{/admin/orders/{id}/status(id=${order.id})}"
             method="POST"
           >
-            <div class="form-group">
+            <div class="form-group" style="max-width: 320px">
               <label for="status">Trạng thái:</label>
               <select id="status" name="status" class="form-control">
                 <option
@@ -221,8 +246,10 @@
                 ></option>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <button type="submit" class="btn btn-primary mt-2">Cập nhật</button>
           </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
