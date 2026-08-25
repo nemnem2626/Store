@@ -128,6 +128,53 @@
           </div>
         </div>
       </footer>
+
+      <th:block th:if="${session.user != null and session.user.role == 'USER'}">
+        <link rel="stylesheet" th:href="@{/css/support-chat.css}" />
+        <button
+          id="scLauncher"
+          class="sc-launcher"
+          type="button"
+          title="Chat với nhân viên hỗ trợ"
+        >
+          <i class="fas fa-comment-dots"></i>
+          <span id="scBadge" class="sc-dot">0</span>
+        </button>
+        <div id="scPanel" class="sc-panel">
+          <div class="sc-head">
+            <div>
+              <strong>Hỗ trợ STORE®</strong><br />
+              <small>Nhân viên sẽ trả lời trong ít phút</small>
+            </div>
+            <button id="scClose" class="sc-close" type="button">&times;</button>
+          </div>
+          <div id="scBody" class="sc-body">
+            <p class="sc-empty">
+              Xin chào! Bạn cần tư vấn sản phẩm nào? Hãy nhắn cho chúng tôi.
+            </p>
+          </div>
+          <form id="scForm" class="sc-foot">
+            <input
+              type="hidden"
+              class="sc-csrf"
+              th:if="${_csrf != null}"
+              th:name="${_csrf.parameterName}"
+              th:value="${_csrf.token}"
+            />
+            <input
+              id="scInput"
+              type="text"
+              maxlength="1000"
+              autocomplete="off"
+              placeholder="Nhập tin nhắn..."
+            />
+            <button type="submit" title="Gửi">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+        <script th:src="@{/js/support-chat.js}"></script>
+      </th:block>
     </div>
   </body>
 </html>

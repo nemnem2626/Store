@@ -1,0 +1,210 @@
+/* Hộp chat hỗ trợ của khách hàng */
+.sc-launcher {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1050;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.4rem;
+  background: var(--st-accent, #f5385d);
+  box-shadow: 0 10px 24px rgba(245, 56, 93, 0.35);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.sc-launcher:hover {
+  transform: scale(1.07);
+}
+
+.sc-launcher .sc-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #0b1220;
+  color: #fff;
+  font-size: 0.72rem;
+  line-height: 20px;
+  display: none;
+}
+
+.sc-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 90px;
+  z-index: 1050;
+  width: 340px;
+  max-width: calc(100vw - 40px);
+  background: #fff;
+  border: 1px solid var(--st-border, #e6e8ef);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(16, 21, 31, 0.18);
+  overflow: hidden;
+  display: none;
+}
+
+.sc-panel.open {
+  display: block;
+}
+
+.sc-head {
+  background: var(--st-primary, #0b1220);
+  color: #fff;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sc-head strong {
+  font-size: 0.98rem;
+}
+
+.sc-head small {
+  opacity: 0.75;
+}
+
+.sc-close {
+  background: transparent;
+  border: 0;
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sc-body {
+  height: 320px;
+  overflow-y: auto;
+  padding: 0.9rem;
+  background: #f7f8fc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sc-empty {
+  margin: auto;
+  color: var(--st-muted, #6b7280);
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.sc-msg {
+  max-width: 80%;
+  padding: 0.55rem 0.8rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.sc-msg-time {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.7rem;
+  opacity: 0.65;
+}
+
+.sc-msg.user {
+  align-self: flex-end;
+  background: var(--st-accent, #f5385d);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.sc-msg.staff {
+  align-self: flex-start;
+  background: #fff;
+  color: var(--st-text, #10151f);
+  border: 1px solid var(--st-border, #e6e8ef);
+  border-bottom-left-radius: 4px;
+}
+
+.sc-foot {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  border-top: 1px solid var(--st-border, #e6e8ef);
+  background: #fff;
+}
+
+.sc-foot input {
+  flex: 1;
+  border: 1px solid var(--st-border, #e6e8ef);
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.sc-foot input:focus {
+  outline: none;
+  border-color: var(--st-accent, #f5385d);
+}
+
+.sc-foot button {
+  border: 0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background: var(--st-primary, #0b1220);
+  color: #fff;
+  cursor: pointer;
+}
+
+.sc-foot button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Hộp thư hỗ trợ của nhân viên */
+.sc-inbox-list {
+  max-height: 620px;
+  overflow-y: auto;
+}
+
+.sc-inbox-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--ad-border, #e6e8ef);
+  background: #fff;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+}
+
+.sc-inbox-item:hover {
+  background: #f8f9fc;
+}
+
+.sc-inbox-item.active {
+  background: #fff1f4;
+  border-left: 3px solid var(--ad-accent, #f5385d);
+}
+
+.sc-inbox-item .sc-inbox-last {
+  display: block;
+  color: var(--ad-muted, #6b7280);
+  font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sc-thread {
+  height: 460px;
+  overflow-y: auto;
+  padding: 1rem;
+  background: #f7f8fc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

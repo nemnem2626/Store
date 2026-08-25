@@ -77,7 +77,7 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/register", "/oauth2/**", "/assets/**", "/home", "/product", "/debug-auth", "/error", "/vnpay-return").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/staff/**").hasRole("STAFF")
-                .requestMatchers("/account/**", "/orders", "/user/edit").authenticated()
+                .requestMatchers("/account/**", "/orders", "/user/edit", "/chat/**").authenticated()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form

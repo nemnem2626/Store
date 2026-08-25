@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hộp thư hỗ trợ</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
+    <link rel="stylesheet" th:href="@{/css/support-chat.css}" />
+  </head>
+  <body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"
+              ><i class="fas fa-bars"></i
+            ></a>
+          </li>
+        </ul>
+      </nav>
+
+      <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <a href="#" class="brand-link">
+          <span
+            class="brand-text font-weight-light"
+            th:text="${isAdmin} ? 'Admin Panel' : 'Staff Panel'"
+            >Panel</span
+          ></a
+        >
+        <div class="sidebar">
+          <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+              <li class="nav-item">
+                <a
+                  th:href="${isAdmin} ? @{/admin/index} : @{/staff/index}"
+                  class="nav-link"
+                  ><i class="nav-icon fas fa-home"></i>
+                  <p>Trang chủ</p></a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  th:href="${isAdmin} ? @{/admin/orders} : @{/staff/orders}"
+                  class="nav-link"
+                  ><i class="nav-icon fas fa-shopping-cart"></i>
+                  <p>Quản lý đơn hàng</p></a
+                >
+              </li>
+              <li class="nav-item">
+                <a th:href="@{${basePath}}" class="nav-link active"
+                  ><i class="nav-icon fas fa-comments"></i>
+                  <p>Hộp thư hỗ trợ</p></a
+                >
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/logout}" class="nav-link"
+                  ><i class="nav-icon fas fa-arrow-right-from-bracket"></i>
+                  <p>Đăng xuất</p></a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+      <div class="content-wrapper">
+        <div class="container-fluid mt-4">
+          <div class="ad-page-head">
+            <div>
+              <h2>Hộp thư hỗ trợ</h2>
+              <p>Trả lời tin nhắn khách hàng gửi từ hộp chat trên website.</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 mb-3">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title">Khách hàng</h5>
+                </div>
+                <div class="sc-inbox-list" id="scInboxList">
+                  <p
+                    class="p-3 mb-0 text-muted"
+                    th:if="${#lists.isEmpty(conversations)}"
+                  >
+                    Chưa có tin nhắn nào.
+                  </p>
+                  <button
+                    type="button"
+                    class="sc-inbox-item"
+                    th:each="conv : ${conversations}"
+                    th:attr="data-id=${conv.customer.id}, data-name=${conv.customer.fullname != null ? conv.customer.fullname : conv.customer.username}"
+                  >
+                    <span class="d-flex justify-content-between">
+                      <strong
+                        th:text="${conv.customer.fullname != null ? conv.customer.fullname : conv.customer.username}"
+                        >Khách</strong
+                      >
+                      <span
+                        class="ad-badge ad-badge-pending"
+                        th:if="${conv.unread > 0}"
+                        th:text="${conv.unread}"
+                        >0</span
+                      >
+                    </span>
+                    <span
+                      class="sc-inbox-last"
+                      th:text="${(conv.lastSenderRole == 'STAFF' ? 'Bạn: ' : '') + conv.lastMessage}"
+                      >...</span
+                    >
+                    <span
+                      class="sc-inbox-last"
+                      th:text="${#dates.format(conv.lastTime, 'dd/MM/yyyy HH:mm')}"
+                      >...</span
+                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-8">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title" id="scThreadTitle">
+                    Chọn một khách hàng để trả lời
+                  </h5>
+                </div>
+                <div class="sc-thread" id="scThread"></div>
+                <form class="sc-foot" id="scReplyForm">
+                  <input
+                    type="hidden"
+                    class="sc-csrf"
+                    th:if="${_csrf != null}"
+                    th:name="${_csrf.parameterName}"
+                    th:value="${_csrf.token}"
+                  />
+                  <input
+                    type="text"
+                    id="scReplyInput"
+                    maxlength="1000"
+                    autocomplete="off"
+                    placeholder="Nhập câu trả lời..."
+                    disabled
+                  />
+                  <button type="submit" id="scReplyBtn" disabled title="Gửi">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <script th:inline="javascript">
+      const BASE_PATH = /*[[${basePath}]]*/ "/staff/chat";
+    </script>
+    <script th:src="@{/js/support-inbox.js}"></script>
+  </body>
+</html>
