@@ -20,6 +20,7 @@ USE STORE;
 GO
 
 /* ---------- 1. Xoá bảng cũ (theo thứ tự khoá ngoại) ---------- */
+DROP TABLE IF EXISTS dbo.ChatMessages;
 DROP TABLE IF EXISTS dbo.OrderDetails;
 DROP TABLE IF EXISTS dbo.Orders;
 DROP TABLE IF EXISTS dbo.CartItems;
@@ -121,6 +122,22 @@ CREATE TABLE dbo.OrderDetails (
     quantity   INT NOT NULL,
     price      DECIMAL(38,2) NOT NULL
 );
+GO
+
+/* Tin nhắn hỗ trợ giữa khách hàng và nhân viên.
+   user_id là khách hàng sở hữu hội thoại, sender_id là người gửi tin. */
+CREATE TABLE dbo.ChatMessages (
+    id          BIGINT IDENTITY(1,1) PRIMARY KEY,
+    user_id     INT NOT NULL REFERENCES dbo.Users(id),
+    sender_id   INT NULL REFERENCES dbo.Users(id),
+    sender_role VARCHAR(20) NOT NULL,
+    content     NVARCHAR(1000) NOT NULL,
+    created_at  DATETIME2 NOT NULL,
+    is_read     BIT NOT NULL DEFAULT 0
+);
+GO
+
+CREATE INDEX IX_ChatMessages_User ON dbo.ChatMessages(user_id, id);
 GO
 
 /* ---------- 3. Tài khoản ---------- */
