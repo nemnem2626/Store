@@ -20,7 +20,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -136,7 +140,56 @@ public class AdminController {
                 .sorted((a, b) -> Long.compare(b.getId(), a.getId()))
                 .limit(5)
                 .collect(Collectors.toList()));
+        addRevenueChartData(model, orders);
         return "admin/index";
+    }
+
+    // Doanh thu 12 tháng gần nhất + tỉ lệ trạng thái đơn, dùng cho biểu đồ ở dashboard.
+    private void addRevenueChartData(Model model, List<Order> orders) {
+        YearMonth current = YearMonth.now();
+        List<YearMonth> months = new ArrayList<>();
+        for (int i = 11; i >= 0; i--) {
+            months.add(current.minusMonths(i));
+        }
+
+        Map<YearMonth, Double> revenueByMonth = new LinkedHashMap<>();
+        Map<YearMonth, Long> ordersByMonth = new LinkedHashMap<>();
+        for (YearMonth month : months) {
+            revenueByMonth.put(month, 0.0);
+            ordersByMonth.put(month, 0L);
+        }
+
+        Map<String, Long> statusCounts = new LinkedHashMap<>();
+        for (String status : Arrays.asList("PENDING", "SHIPPING", "DELIVERED", "CANCELED")) {
+            statusCounts.put(status, 0L);
+        }
+
+        for (Order order : orders) {
+            String status = order.getStatus() == null ? "PENDING" : order.getStatus().toUpperCase();
+            statusCounts.merge(status, 1L, Long::sum);
+            if (order.getOrderDate() == null || "CANCELED".equals(status)) {
+                continue;
+            }
+            YearMonth month = YearMonth.from(
+                    order.getOrderDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            if (!revenueByMonth.containsKey(month)) {
+                continue;
+            }
+            double total = order.getTotalPrice() == null ? 0 : order.getTotalPrice();
+            revenueByMonth.merge(month, total, Double::sum);
+            ordersByMonth.merge(month, 1L, Long::sum);
+        }
+
+        DateTimeFormatter monthFormat = DateTimeFormatter.ofPattern("MM/yyyy");
+        model.addAttribute("chartLabels",
+                months.stream().map(monthFormat::format).collect(Collectors.toList()));
+        model.addAttribute("chartRevenue", new ArrayList<>(revenueByMonth.values()));
+        model.addAttribute("chartOrders", new ArrayList<>(ordersByMonth.values()));
+        model.addAttribute("chartStatusLabels", statusCounts.keySet().stream()
+                .map(status -> orderService.getVietnameseStatus(status))
+                .collect(Collectors.toList()));
+        model.addAttribute("chartStatusValues", new ArrayList<>(statusCounts.values()));
+        model.addAttribute("monthRevenue", revenueByMonth.get(current));
     }
 
     // ----------- QUẢN LÝ SẢN PHẨM -----------
