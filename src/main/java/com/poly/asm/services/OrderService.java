@@ -1,11 +1,13 @@
 package com.poly.asm.services;
 
 import com.poly.asm.ResourceNotFoundException;
+import com.poly.asm.daos.NotificationRepository;
 import com.poly.asm.daos.OrderDetailRepository;
 import com.poly.asm.daos.OrderRepository;
 import com.poly.asm.daos.ProductVariantRepository;
 import com.poly.asm.entitys.Cart;
 import com.poly.asm.entitys.CartItem;
+import com.poly.asm.entitys.Notification;
 import com.poly.asm.entitys.Order;
 import com.poly.asm.entitys.OrderDetail;
 import com.poly.asm.entitys.ProductVariant;
@@ -31,6 +33,12 @@ public class OrderService {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private MailService mailService;
+
     private static final List<String> VALID_STATUSES = Arrays.asList("PENDING", "SHIPPING", "DELIVERED", "CANCELED");
 
     private static final Map<String, String> STATUS_VI_MAPPING = new HashMap<>();
@@ -44,6 +52,12 @@ public class OrderService {
     // Phương thức để lấy trạng thái tiếng Việt
     public String getVietnameseStatus(String englishStatus) {
         return STATUS_VI_MAPPING.getOrDefault(englishStatus.toUpperCase(), "Không xác định");
+    }
+
+    /** Đơn đã giao hoặc đã hủy là trạng thái cuối, không cho cập nhật nữa. */
+    public boolean isLocked(Order order) {
+        String status = order.getStatus() == null ? "PENDING" : order.getStatus().toUpperCase();
+        return "DELIVERED".equals(status) || "CANCELED".equals(status);
     }
     
     /**
@@ -86,22 +100,57 @@ public class OrderService {
 
     @Transactional
     public void updateOrderStatus(Long id, String status) {
+        updateOrderStatus(id, status, "STAFF");
+    }
+
+    /**
+     * Cập nhật trạng thái đơn hàng theo vai trò người thực hiện.
+     * Chỉ staff được xác nhận giao hàng (PENDING -> SHIPPING), việc đó sinh thông báo cho admin.
+     * Khi chuyển sang DELIVERED, khách nhận email xác nhận.
+     */
+    @Transactional
+    public void updateOrderStatus(Long id, String status, String actorRole) {
         Order order = orderRepository.findByIdWithDetails(id);
         if (order == null) {
             throw new ResourceNotFoundException("Đơn hàng không tồn tại với ID: " + id);
         }
 
-        if (!VALID_STATUSES.contains(status.toUpperCase())) {
+        String newStatus = status.toUpperCase();
+        String currentStatus = order.getStatus() == null ? "PENDING" : order.getStatus().toUpperCase();
+
+        if (!VALID_STATUSES.contains(newStatus)) {
             throw new IllegalArgumentException("Trạng thái không hợp lệ: " + status);
         }
 
+        if (isLocked(order)) {
+            throw new IllegalStateException("Đơn hàng đã " + getVietnameseStatus(currentStatus).toLowerCase()
+                    + ", không thể cập nhật trạng thái nữa");
+        }
+
+        if (newStatus.equals(currentStatus)) {
+            return;
+        }
+
+        if ("PENDING".equals(newStatus)) {
+            throw new IllegalStateException("Không thể đưa đơn hàng trở lại trạng thái Chờ xử lý");
+        }
+
+        // Xác nhận giao hàng là quyền của staff, admin chỉ theo dõi
+        if ("SHIPPING".equals(newStatus) && !"STAFF".equalsIgnoreCase(actorRole)) {
+            throw new IllegalStateException("Chuyển sang Đang giao phải do staff xác nhận");
+        }
+
+        if ("DELIVERED".equals(newStatus) && !"SHIPPING".equals(currentStatus)) {
+            throw new IllegalStateException("Chỉ có thể xác nhận Đã giao khi đơn đang ở trạng thái Đang giao");
+        }
+
         // Kiểm tra trạng thái hợp lệ khi hủy
-        if ("CANCELED".equalsIgnoreCase(status) && !"PENDING".equalsIgnoreCase(order.getStatus())) {
+        if ("CANCELED".equals(newStatus) && !"PENDING".equals(currentStatus)) {
             throw new IllegalStateException("Chỉ có thể hủy đơn hàng ở trạng thái Chờ xử lý");
         }
 
         // Nếu hủy đơn hàng, hoàn kho
-        if ("CANCELED".equalsIgnoreCase(status)) {
+        if ("CANCELED".equals(newStatus)) {
             for (OrderDetail detail : order.getOrderDetails()) {
                 ProductVariant variant = detail.getVariant();
                 variant.setStock(variant.getStock() + detail.getQuantity());
@@ -109,7 +158,20 @@ public class OrderService {
             }
         }
 
-        order.setStatus(status.toUpperCase());
+        order.setStatus(newStatus);
         orderRepository.save(order);
+
+        if ("SHIPPING".equals(newStatus)) {
+            Notification notification = new Notification();
+            notification.setTargetRole("ADMIN");
+            notification.setOrderId(order.getId());
+            notification.setContent("Staff đã xác nhận giao đơn hàng #" + order.getId()
+                    + " của khách " + order.getFullname());
+            notificationRepository.save(notification);
+        }
+
+        if ("DELIVERED".equals(newStatus)) {
+            mailService.sendOrderDelivered(order);
+        }
     }
 }

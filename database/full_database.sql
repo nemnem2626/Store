@@ -20,6 +20,7 @@ USE STORE;
 GO
 
 /* ---------- 1. Xoá bảng cũ (theo thứ tự khoá ngoại) ---------- */
+DROP TABLE IF EXISTS dbo.Notifications;
 DROP TABLE IF EXISTS dbo.ChatMessages;
 DROP TABLE IF EXISTS dbo.OrderDetails;
 DROP TABLE IF EXISTS dbo.Orders;
@@ -138,6 +139,20 @@ CREATE TABLE dbo.ChatMessages (
 GO
 
 CREATE INDEX IX_ChatMessages_User ON dbo.ChatMessages(user_id, id);
+GO
+
+/* Thông báo nội bộ (ví dụ: staff xác nhận giao đơn hàng -> báo cho admin). */
+CREATE TABLE dbo.Notifications (
+    id          BIGINT IDENTITY(1,1) PRIMARY KEY,
+    target_role VARCHAR(20) NOT NULL,
+    content     NVARCHAR(500) NOT NULL,
+    order_id    BIGINT NULL,
+    created_at  DATETIME2 NOT NULL,
+    is_read     BIT NOT NULL DEFAULT 0
+);
+GO
+
+CREATE INDEX IX_Notifications_Role ON dbo.Notifications(target_role, id);
 GO
 
 /* ---------- 3. Tài khoản ---------- */

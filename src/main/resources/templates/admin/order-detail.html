@@ -223,7 +223,15 @@
           <div class="card mb-4">
             <div class="card-header"><h5>Cập nhật trạng thái đơn hàng</h5></div>
             <div class="card-body">
+          <div th:if="${orderLocked}" class="alert alert-secondary mb-0">
+            Đơn hàng đã
+            <strong
+              th:text="${order.status == 'CANCELED'} ? 'hủy' : 'giao thành công'"
+            ></strong
+            >, trạng thái đã bị khóa và không thể cập nhật nữa.
+          </div>
           <form
+            th:unless="${orderLocked}"
             th:action="@{/admin/orders/{id}/status(id=${order.id})}"
             method="POST"
           >
@@ -231,27 +239,29 @@
               <label for="status">Trạng thái:</label>
               <select id="status" name="status" class="form-control">
                 <option
-                  value="PENDING"
-                  th:selected="${order.status == 'PENDING'}"
-                  th:text="'Chờ xử lý'"
+                  th:value="${order.status}"
+                  th:text="${order.status == 'SHIPPING'} ? 'Đang giao (hiện tại)' : 'Chờ xử lý (hiện tại)'"
                 ></option>
                 <option
-                  value="SHIPPING"
-                  th:selected="${order.status == 'SHIPPING'}"
-                  th:text="'Đang giao'"
-                ></option>
-                <option
+                  th:if="${order.status == 'SHIPPING'}"
                   value="DELIVERED"
-                  th:selected="${order.status == 'DELIVERED'}"
                   th:text="'Đã giao'"
                 ></option>
                 <option
+                  th:if="${order.status == 'PENDING'}"
                   value="CANCELED"
-                  th:selected="${order.status == 'CANCELED'}"
                   th:text="'Đã hủy'"
                 ></option>
               </select>
             </div>
+            <p class="text-muted small mb-2" th:if="${order.status == 'PENDING'}">
+              Chuyển sang "Đang giao" phải do staff xác nhận; admin sẽ nhận thông
+              báo trên trang chủ khi staff xác nhận.
+            </p>
+            <p class="text-muted small mb-2" th:if="${order.status == 'SHIPPING'}">
+              Khi xác nhận "Đã giao", khách hàng sẽ nhận email xác nhận giao hàng
+              thành công.
+            </p>
             <button type="submit" class="btn btn-primary mt-2">Cập nhật</button>
           </form>
             </div>

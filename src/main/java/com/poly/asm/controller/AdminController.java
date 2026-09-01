@@ -65,6 +65,9 @@ public class AdminController {
     @Autowired
     private CartItemRepository cartItemRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     // ----------- QUẢN LÝ ĐƠN HÀNG -----------
@@ -85,6 +88,7 @@ public class AdminController {
             return "redirect:/admin/orders";
         }
         model.addAttribute("order", order);
+        model.addAttribute("orderLocked", orderService.isLocked(order));
         return "admin/order-detail";
     }
 
@@ -93,7 +97,7 @@ public class AdminController {
     public String updateOrderStatus(@PathVariable Long id, @RequestParam("status") String status,
                                    RedirectAttributes redirectAttributes) {
         try {
-            orderService.updateOrderStatus(id, status);
+            orderService.updateOrderStatus(id, status, "ADMIN");
             redirectAttributes.addFlashAttribute("success", "Trạng thái đơn hàng đã được cập nhật!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -140,8 +144,17 @@ public class AdminController {
                 .sorted((a, b) -> Long.compare(b.getId(), a.getId()))
                 .limit(5)
                 .collect(Collectors.toList()));
+        model.addAttribute("notifications", notificationRepository.findTop10ByTargetRoleOrderByIdDesc("ADMIN"));
+        model.addAttribute("unreadNotificationCount", notificationRepository.countByTargetRoleAndIsReadFalse("ADMIN"));
         addRevenueChartData(model, orders);
         return "admin/index";
+    }
+
+    @PostMapping("/notifications/read")
+    @Transactional
+    public String markNotificationsRead() {
+        notificationRepository.markAllRead("ADMIN");
+        return "redirect:/admin/index";
     }
 
     // Doanh thu 12 tháng gần nhất + tỉ lệ trạng thái đơn, dùng cho biểu đồ ở dashboard.
