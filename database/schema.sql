@@ -94,8 +94,13 @@ CREATE TABLE dbo.Orders (
     payment_method VARCHAR(255) NOT NULL,
     total_price    FLOAT NOT NULL,
     status         VARCHAR(255) NULL,
-    order_date     DATETIME2 NULL
+    order_date     DATETIME2 NULL,
+    confirm_token  VARCHAR(64) NULL
 );
+GO
+
+IF COL_LENGTH('dbo.Orders', 'confirm_token') IS NULL
+    ALTER TABLE dbo.Orders ADD confirm_token VARCHAR(64) NULL;
 GO
 
 IF OBJECT_ID('dbo.OrderDetails', 'U') IS NULL

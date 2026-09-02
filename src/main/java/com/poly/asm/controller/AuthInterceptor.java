@@ -25,7 +25,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
     private static final List<String> PUBLIC_URLS = Arrays.asList(
-            "/login", "/register", "/oauth2/", "/assets/", "/home", "/product", "/debug-auth", "/error"
+            "/login", "/register", "/oauth2/", "/assets/", "/home", "/product", "/debug-auth", "/error",
+            "/orders/confirm-received/"
     );
     private static final List<String> USER_REQUIRED_URLS = Arrays.asList(
             "/account/edit", "/account/chgpwd", "/order/"
