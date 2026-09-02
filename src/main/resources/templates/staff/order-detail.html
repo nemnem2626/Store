@@ -85,16 +85,24 @@
 </table>
 
                 <h4 class="mt-4">Cập nhật trạng thái đơn hàng</h4>
-                <form th:action="@{/staff/orders/{id}/status(id=${order.id})}" method="POST">
+                <div th:if="${orderLocked}" class="alert alert-secondary mb-0">
+                    Đơn hàng đã <strong th:text="${order.status == 'CANCELED'} ? 'hủy' : 'giao thành công'"></strong>,
+                    trạng thái đã bị khóa và không thể cập nhật nữa.
+                </div>
+                <form th:unless="${orderLocked}" th:action="@{/staff/orders/{id}/status(id=${order.id})}" method="POST">
                     <div class="form-group">
                         <label for="status">Trạng thái:</label>
                         <select id="status" name="status" class="form-control">
-						    <option value="PENDING" th:selected="${order.status == 'PENDING'}" th:text="'Chờ xử lý'"></option>
-						    <option value="SHIPPING" th:selected="${order.status == 'SHIPPING'}" th:text="'Đang giao'"></option>
-						    <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}" th:text="'Đã giao'"></option>
-						    <option value="CANCELED" th:selected="${order.status == 'CANCELED'}" th:text="'Đã hủy'"></option>
+						    <option th:value="${order.status}"
+						            th:text="${order.status == 'SHIPPING'} ? 'Đang giao (hiện tại)' : 'Chờ xử lý (hiện tại)'"></option>
+						    <option th:if="${order.status == 'PENDING'}" value="SHIPPING" th:text="'Xác nhận giao hàng (Đang giao)'"></option>
+						    <option th:if="${order.status == 'SHIPPING'}" value="DELIVERED" th:text="'Đã giao'"></option>
+						    <option th:if="${order.status == 'PENDING'}" value="CANCELED" th:text="'Đã hủy'"></option>
 						</select>
                     </div>
+                    <p class="text-muted small" th:if="${order.status == 'SHIPPING'}">
+                        Khi xác nhận "Đã giao", khách hàng sẽ nhận email xác nhận giao hàng thành công.
+                    </p>
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </form>
             </div>

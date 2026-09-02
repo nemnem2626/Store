@@ -48,6 +48,7 @@ public class StaffController {
             return "redirect:/staff/orders";
         }
         model.addAttribute("order", order);
+        model.addAttribute("orderLocked", orderService.isLocked(order));
         return "staff/order-detail";
     }
 
@@ -56,7 +57,7 @@ public class StaffController {
     public String updateOrderStatus(@PathVariable Long id, @RequestParam("status") String status,
                                    RedirectAttributes redirectAttributes) {
         try {
-            orderService.updateOrderStatus(id, status);
+            orderService.updateOrderStatus(id, status, "STAFF");
             redirectAttributes.addFlashAttribute("success", "Trạng thái đơn hàng đã được cập nhật!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());

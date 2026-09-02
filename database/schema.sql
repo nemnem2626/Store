@@ -123,3 +123,18 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_ChatMessages_User' AND object_id = OBJECT_ID('dbo.ChatMessages'))
 CREATE INDEX IX_ChatMessages_User ON dbo.ChatMessages(user_id, id);
 GO
+
+IF OBJECT_ID('dbo.Notifications', 'U') IS NULL
+CREATE TABLE dbo.Notifications (
+    id          BIGINT IDENTITY(1,1) PRIMARY KEY,
+    target_role VARCHAR(20) NOT NULL,
+    content     NVARCHAR(500) NOT NULL,
+    order_id    BIGINT NULL,
+    created_at  DATETIME2 NOT NULL,
+    is_read     BIT NOT NULL DEFAULT 0
+);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Notifications_Role' AND object_id = OBJECT_ID('dbo.Notifications'))
+CREATE INDEX IX_Notifications_Role ON dbo.Notifications(target_role, id);
+GO
