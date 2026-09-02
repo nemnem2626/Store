@@ -7,6 +7,7 @@ import com.poly.asm.entitys.OrderDetail;
 import com.poly.asm.entitys.User;
 import com.poly.asm.services.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,6 +57,44 @@ public class OrderController {
 
         model.addAttribute("error", "Đơn hàng không tồn tại hoặc không thuộc về bạn!");
         return "redirect:/orders";
+    }
+
+    /** Khách bấm "Đã nhận hàng" trong trang đơn hàng. */
+    @PostMapping("/received/{orderId}")
+    public String confirmReceived(@PathVariable Long orderId, HttpServletRequest request,
+                                  RedirectAttributes redirect) {
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Order order = orderRepository.findByIdWithDetails(orderId);
+        if (order == null || !order.getUser().getId().equals(user.getId())) {
+            redirect.addFlashAttribute("error", "Đơn hàng không tồn tại hoặc không thuộc về bạn!");
+            return "redirect:/orders";
+        }
+
+        try {
+            orderService.updateOrderStatus(orderId, "DELIVERED", "CUSTOMER");
+            redirect.addFlashAttribute("message",
+                    "Cảm ơn bạn đã xác nhận nhận hàng đơn #" + orderId + ".");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Không thể xác nhận: " + e.getMessage());
+        }
+        return "redirect:/orders";
+    }
+
+    /** Khách bấm link xác nhận đã nhận hàng trong email (không cần đăng nhập). */
+    @GetMapping("/confirm-received/{orderId}")
+    public String confirmReceivedByEmail(@PathVariable Long orderId, @RequestParam String token,
+                                         Model model) {
+        try {
+            orderService.confirmReceivedByToken(orderId, token);
+            model.addAttribute("orderId", orderId);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "web/order-received";
     }
 
     @PostMapping("/cancel/{orderId}")

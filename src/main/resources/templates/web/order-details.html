@@ -121,6 +121,11 @@
                     <!-- Nút quay lại và hủy -->
                     <div class="mt-4">
                         <a th:href="@{/orders}" class="btn btn-st-ghost">← Quay lại danh sách</a>
+                        <form th:if="${order?.status == 'SHIPPING'}" th:action="@{'/orders/received/' + ${order.id}}" method="post" style="display:inline; margin-left: 10px;">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check2-circle"></i> Đã nhận hàng
+                            </button>
+                        </form>
                         <form th:if="${order?.status == 'PENDING'}" th:action="@{'/orders/cancel/' + ${order.id}}" method="post" style="display:inline; margin-left: 10px;">
                             <button type="submit" class="btn btn-st-outline" style="border-color: var(--st-accent); color: var(--st-accent)">
                                 <i class="bi bi-x-circle"></i> Hủy đơn hàng

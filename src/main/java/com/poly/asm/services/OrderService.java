@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -127,7 +128,8 @@ public class OrderService {
         }
 
         if (isLocked(order)) {
-            throw new IllegalStateException("Đơn hàng đã " + getVietnameseStatus(currentStatus).toLowerCase()
+            throw new IllegalStateException("Đơn hàng đang ở trạng thái "
+                    + getVietnameseStatus(currentStatus)
                     + ", không thể cập nhật trạng thái nữa");
         }
 
@@ -163,6 +165,11 @@ public class OrderService {
         }
 
         order.setStatus(newStatus);
+
+        if ("SHIPPING".equals(newStatus)) {
+            order.setConfirmToken(UUID.randomUUID().toString().replace("-", ""));
+        }
+
         orderRepository.save(order);
 
         if ("SHIPPING".equals(newStatus)) {
@@ -172,20 +179,39 @@ public class OrderService {
             notification.setContent("Staff đã xác nhận giao đơn hàng #" + order.getId()
                     + " của khách " + order.getFullname());
             notificationRepository.save(notification);
+            afterCommit(() -> mailService.sendOrderShipped(order));
         }
 
         if ("DELIVERED".equals(newStatus)) {
-            // Chỉ gửi email sau khi transaction commit thành công, tránh báo giao hàng nhầm
-            if (TransactionSynchronizationManager.isSynchronizationActive()) {
-                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                    @Override
-                    public void afterCommit() {
-                        mailService.sendOrderDelivered(order);
-                    }
-                });
-            } else {
-                mailService.sendOrderDelivered(order);
-            }
+            afterCommit(() -> mailService.sendOrderDelivered(order));
         }
+    }
+
+    /** Chỉ gửi email sau khi transaction commit thành công, tránh báo nhầm cho khách. */
+    private void afterCommit(Runnable action) {
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    action.run();
+                }
+            });
+        } else {
+            action.run();
+        }
+    }
+
+    /** Xác nhận đã nhận hàng bằng link trong email (không cần đăng nhập). */
+    @Transactional
+    public void confirmReceivedByToken(Long orderId, String token) {
+        Order order = orderRepository.findByIdForUpdate(orderId);
+        if (order == null) {
+            throw new ResourceNotFoundException("Đơn hàng không tồn tại với ID: " + orderId);
+        }
+        if (token == null || order.getConfirmToken() == null
+                || !order.getConfirmToken().equals(token)) {
+            throw new IllegalStateException("Link xác nhận không hợp lệ hoặc đã hết hiệu lực");
+        }
+        updateOrderStatus(orderId, "DELIVERED", "CUSTOMER");
     }
 }

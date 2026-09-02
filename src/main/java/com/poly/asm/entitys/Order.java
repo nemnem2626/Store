@@ -44,6 +44,10 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
+    /** Mã ngẫu nhiên trong link email để khách xác nhận đã nhận hàng mà không cần đăng nhập. */
+    @Column(name = "confirm_token", length = 64)
+    private String confirmToken;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
     private List<OrderDetail> orderDetails;

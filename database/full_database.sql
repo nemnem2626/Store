@@ -112,7 +112,8 @@ CREATE TABLE dbo.Orders (
     payment_method VARCHAR(255) NOT NULL,
     total_price    FLOAT NOT NULL,
     status         VARCHAR(255) NULL,
-    order_date     DATETIME2 NULL
+    order_date     DATETIME2 NULL,
+    confirm_token  VARCHAR(64) NULL
 );
 GO
 
