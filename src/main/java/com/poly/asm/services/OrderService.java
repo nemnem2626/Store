@@ -112,7 +112,9 @@ public class OrderService {
      */
     @Transactional
     public void updateOrderStatus(Long id, String status, String actorRole) {
-        Order order = orderRepository.findByIdWithDetails(id);
+        // Khóa dòng đơn trước khi đọc trạng thái để tránh hai request cập nhật chồng nhau
+        Order locked = orderRepository.findByIdForUpdate(id);
+        Order order = locked == null ? null : orderRepository.findByIdWithDetails(id);
         if (order == null) {
             throw new ResourceNotFoundException("Đơn hàng không tồn tại với ID: " + id);
         }

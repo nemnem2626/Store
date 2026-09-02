@@ -1,8 +1,11 @@
 package com.poly.asm.daos;
 
 import com.poly.asm.entitys.Order;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,5 +25,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Order findByIdWithDetails(Long id);
 
     List<Order> findByUser_Id(Long userId);
+
+    // Khóa dòng đơn hàng để hai request không cùng đổi trạng thái một lúc
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT o FROM Order o WHERE o.id = :id")
+    Order findByIdForUpdate(@Param("id") Long id);
 
 }
