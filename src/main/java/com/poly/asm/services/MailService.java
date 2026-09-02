@@ -18,7 +18,7 @@ import com.poly.asm.entitys.OrderDetail;
 public class MailService {
 
     private static final Logger logger = LoggerFactory.getLogger(MailService.class);
-    private static final NumberFormat MONEY = NumberFormat.getInstance(new Locale("vi", "VN"));
+    private static final Locale MONEY_LOCALE = Locale.forLanguageTag("vi-VN");
 
     @Autowired(required = false)
     private JavaMailSender mailSender;
@@ -53,6 +53,10 @@ public class MailService {
         }
     }
 
+    private NumberFormat money() {
+        return NumberFormat.getInstance(MONEY_LOCALE);
+    }
+
     private String buildBody(Order order) {
         StringBuilder body = new StringBuilder();
         body.append("Xin chào ").append(order.getFullname()).append(",\n\n");
@@ -62,10 +66,10 @@ public class MailService {
             for (OrderDetail detail : order.getOrderDetails()) {
                 body.append(" - ").append(detail.getVariant().getProduct().getName())
                         .append(" x").append(detail.getQuantity())
-                        .append(": ").append(MONEY.format(detail.getPrice())).append(" VNĐ\n");
+                        .append(": ").append(money().format(detail.getPrice())).append(" VNĐ\n");
             }
         }
-        body.append("\nTổng tiền: ").append(MONEY.format(order.getTotalPrice())).append(" VNĐ\n");
+        body.append("\nTổng tiền: ").append(money().format(order.getTotalPrice())).append(" VNĐ\n");
         body.append("Địa chỉ nhận: ").append(order.getAddress()).append("\n\n");
         body.append("Cảm ơn bạn đã mua sắm tại STORE. Mọi thắc mắc xin liên hệ hotline 012 345 6789.\n");
         return body.toString();

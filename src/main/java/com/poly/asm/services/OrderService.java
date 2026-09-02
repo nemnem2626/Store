@@ -15,6 +15,8 @@ import com.poly.asm.entitys.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -171,7 +173,17 @@ public class OrderService {
         }
 
         if ("DELIVERED".equals(newStatus)) {
-            mailService.sendOrderDelivered(order);
+            // Chỉ gửi email sau khi transaction commit thành công, tránh báo giao hàng nhầm
+            if (TransactionSynchronizationManager.isSynchronizationActive()) {
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        mailService.sendOrderDelivered(order);
+                    }
+                });
+            } else {
+                mailService.sendOrderDelivered(order);
+            }
         }
     }
 }
