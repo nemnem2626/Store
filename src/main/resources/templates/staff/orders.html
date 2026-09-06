@@ -78,6 +78,14 @@
                                            onclick="return confirm('Bạn có chắc muốn xóa?');">
                                             <i class="fas fa-trash"></i> Xóa
                                         </a>
+                                        <form th:if="${order.status == 'SHIPPING'}" class="d-inline"
+                                              th:action="@{/staff/orders/{id}/status(id=${order.id})}" method="POST"
+                                              onsubmit="return confirm('Xác nhận khách đã nhận được hàng?');">
+                                            <input type="hidden" name="status" value="DELIVERED">
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i> Đã giao
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             </tbody>
