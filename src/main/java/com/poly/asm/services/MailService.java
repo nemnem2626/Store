@@ -61,7 +61,8 @@ public class MailService {
         return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
-    private String confirmUrl(Order order) {
+    /** Link để khách xác nhận đã nhận hàng (dùng cho email và mã QR khi giao hàng). */
+    public String confirmUrl(Order order) {
         String root = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
         return root + "/orders/confirm-received/" + order.getId() + "?token=" + order.getConfirmToken();
     }

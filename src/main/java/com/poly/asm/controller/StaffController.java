@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.poly.asm.daos.OrderRepository;
 import com.poly.asm.entitys.Order;
+import com.poly.asm.services.MailService;
 import com.poly.asm.services.OrderService;
 
 @Controller
@@ -23,6 +24,9 @@ public class StaffController {
 	
 	@Autowired
     private OrderService orderService;
+
+	@Autowired
+    private MailService mailService;
 	
     @GetMapping("/index")
     public String index(Model model) {
@@ -49,6 +53,9 @@ public class StaffController {
         }
         model.addAttribute("order", order);
         model.addAttribute("orderLocked", orderService.isLocked(order));
+        if ("SHIPPING".equalsIgnoreCase(order.getStatus()) && order.getConfirmToken() != null) {
+            model.addAttribute("confirmUrl", mailService.confirmUrl(order));
+        }
         return "staff/order-detail";
     }
 
